@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
+using EPE.BusinessLayer;
 
 namespace ConsoleApp1
 {
@@ -10,6 +7,15 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
+            var filePathAlunos = @"E:\MegaSync\EPE\EntityFramework\Alunos_2018-2019.xls";
+
+            var adapter = new AlunoFileAdapter(filePathAlunos, ConfigurationManager.ConnectionStrings["EPEValidation"].ConnectionString);
+
+            //adapter.NumberOfRowsToImportDetermined += Adapter_NumberOfRowsToImportDetermined;
+
+            //adapter.RowTreated += Adapter_RowTreated;
+
+            adapter.LoadData();
         }
     }
 }
