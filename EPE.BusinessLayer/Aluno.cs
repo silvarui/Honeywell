@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EPE.DataAccess;
 
 namespace EPE.BusinessLayer
 {
@@ -35,6 +36,13 @@ namespace EPE.BusinessLayer
         public string Telemovel { get; set; }
         public string Email { get; set; }
 
+        public override object GetEntityKey()
+        {
+            return IdAluno;
+        }
+
+        public List<Boletim> Boletins = new List<Boletim>();
+
         public override string[] GetColumnNames()
         {
             var columns = new List<string>
@@ -59,13 +67,15 @@ namespace EPE.BusinessLayer
         }
     }
 
-    public class AlunoAdapter : EntityDbAdapter<Aluno>
+    public class AlunoAdapter : CacheableEntityAdapter<Aluno>
     {
+        private static Dictionary<object, Aluno> cache = new Dictionary<object, Aluno>();
+
         private const string USP_STORE_ALUNO = "USP_STORE_ALUNO";
         private const string USP_GET_ALUNOS = "USP_GET_ALUNOS";
 
         public AlunoAdapter(string connectionString)
-            : base(connectionString)
+            : base(cache, connectionString, USP_GET_ALUNOS)
         {
         }
 
@@ -91,6 +101,20 @@ namespace EPE.BusinessLayer
             LoadList(ref alunos, USP_GET_ALUNOS, null);
 
             return alunos;
+        }
+
+        protected override void CopyEntityColumnFromRecord(string columnName, ref Aluno entity, Record record)
+        {
+            base.CopyEntityColumnFromRecord(columnName, ref entity, record);
+
+            switch (columnName)
+            {
+                case Aluno.colIdAluno:
+                    {
+                        entity.Boletins = new BoletimAdapter(ConnectionString).GetBoletinsForAluno(entity.IdAluno);
+                    }
+                    break;
+            }
         }
     }
 }

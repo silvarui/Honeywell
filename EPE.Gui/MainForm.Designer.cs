@@ -63,7 +63,7 @@
             this.validarToolStripMenuItem.Name = "validarToolStripMenuItem";
             this.validarToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.validarToolStripMenuItem.Text = "Validar";
-            this.validarToolStripMenuItem.Click += new System.EventHandler(this.validarToolStripMenuItem_Click);
+            this.validarToolStripMenuItem.Click += new System.EventHandler(this.ValidarToolStripMenuItem_Click);
             // 
             // importarToolStripMenuItem
             // 
@@ -79,14 +79,14 @@
             this.alunosToolStripMenuItem.Name = "alunosToolStripMenuItem";
             this.alunosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.alunosToolStripMenuItem.Text = "Alunos";
-            this.alunosToolStripMenuItem.Click += new System.EventHandler(this.alunosToolStripMenuItem_Click);
+            this.alunosToolStripMenuItem.Click += new System.EventHandler(this.AlunosToolStripMenuItem_Click);
             // 
             // movimentosToolStripMenuItem
             // 
             this.movimentosToolStripMenuItem.Name = "movimentosToolStripMenuItem";
             this.movimentosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.movimentosToolStripMenuItem.Text = "Movimentos";
-            this.movimentosToolStripMenuItem.Click += new System.EventHandler(this.movimentosToolStripMenuItem_Click);
+            this.movimentosToolStripMenuItem.Click += new System.EventHandler(this.MovimentosToolStripMenuItem_Click);
             // 
             // janelasToolStripMenuItem
             // 
@@ -99,7 +99,7 @@
             this.sairToolStripMenuItem.Name = "sairToolStripMenuItem";
             this.sairToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
             this.sairToolStripMenuItem.Text = "Sair";
-            this.sairToolStripMenuItem.Click += new System.EventHandler(this.sairToolStripMenuItem_Click);
+            this.sairToolStripMenuItem.Click += new System.EventHandler(this.SairToolStripMenuItem_Click);
             // 
             // statusStrip
             // 
@@ -112,7 +112,7 @@
             this.statusStrip.Size = new System.Drawing.Size(800, 22);
             this.statusStrip.TabIndex = 2;
             this.statusStrip.Text = "StatusStrip";
-            this.statusStrip.SizeChanged += new System.EventHandler(this.statusStrip_SizeChanged);
+            this.statusStrip.SizeChanged += new System.EventHandler(this.StatusStrip_SizeChanged);
             // 
             // lblStripStatusUser
             // 
@@ -143,7 +143,7 @@
             // 
             this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
             // MainForm
             // 

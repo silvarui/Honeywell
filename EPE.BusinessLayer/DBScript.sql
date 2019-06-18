@@ -323,6 +323,36 @@ BEGIN
 	FROM Movimentos
 END
 GO
+
+if exists (select * from sysobjects where id = object_id('dbo.USP_STORE_VALIDADO') and sysstat & 0xf = 4)
+  drop procedure dbo.USP_STORE_VALIDADO
+GO
+
+CREATE PROCEDURE dbo.USP_STORE_VALIDADO
+	@IdMov int,
+	@IdAluno int,
+	@DtValidado datetime,
+    @Valor float
+AS
+BEGIN
+	INSERT Validados(IdMov, IdAluno, DtValid, Valor)
+	VALUES(@IdMov, @IdAluno, @DtValidado, @Valor)
+END
+GO
+
+if exists (select * from sysobjects where id = object_id('dbo.USP_GET_BOLETINS_FOR_ALUNO') and sysstat & 0xf = 4)
+  drop procedure dbo.USP_GET_BOLETINS_FOR_ALUNO
+GO
+
+CREATE PROCEDURE dbo.USP_GET_BOLETINS_FOR_ALUNO
+	@IdAluno varchar(23)
+AS
+BEGIN
+	SELECT IdAluno, NumBoletim
+	FROM Boletins
+	WHERE IdAluno = @IdAluno
+END
+GO
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------

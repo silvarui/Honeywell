@@ -1,0 +1,6 @@
+1 - Pesquisa de movimentos e validação automática;
+2 - Salvar Validação em curso;
+3 - Carregar movimentos não validados após validação guardada;
+4 - Exportação de movimentos validados;
+5 - Pesquisa de Alunos;
+6 - Cabeçalhos das colunas na EntityGridView;

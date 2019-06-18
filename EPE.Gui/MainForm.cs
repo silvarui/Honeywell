@@ -55,12 +55,12 @@ namespace EPE.Gui
             childForm.Activate();
         }
 
-        private void sairToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SairToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Sair();
         }
 
-        private void alunosToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AlunosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var importAlunos = (ImportAlunos)MdiChildren.FirstOrDefault(c => c.GetType() == typeof(ImportAlunos));
 
@@ -76,7 +76,7 @@ namespace EPE.Gui
             }
         }
 
-        private void movimentosToolStripMenuItem_Click(object sender, EventArgs e)
+        private void MovimentosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var importMovimentos = (ImportMovimentos)MdiChildren.FirstOrDefault(c => c.GetType() == typeof(ImportMovimentos));
 
@@ -119,7 +119,7 @@ namespace EPE.Gui
             lblStripStatusActiveWindow.Text = ActiveMdiChild != null ? ActiveMdiChild.Text : string.Empty;
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private void Timer1_Tick(object sender, EventArgs e)
         {
             UpdateDateTime();
         }
@@ -129,7 +129,7 @@ namespace EPE.Gui
             UpdateActiveWindow();
         }
 
-        private void statusStrip_SizeChanged(object sender, EventArgs e)
+        private void StatusStrip_SizeChanged(object sender, EventArgs e)
         {
             Size size = new Size();
             size = this.Size;
@@ -143,20 +143,20 @@ namespace EPE.Gui
             lblStripStatusDate.Size = size;
         }
 
-        private void validarToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ValidarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //var validMovimentos = (ValidateForm)MdiChildren.FirstOrDefault(c => c.GetType() == typeof(ValidateForm));
+            var validMovimentos = (ValidateForm)MdiChildren.FirstOrDefault(c => c.GetType() == typeof(ValidateForm));
 
-            //if (validMovimentos == null)
-            //{
-            //    validMovimentos = new ValidateForm() { MdiParent = this };
+            if (validMovimentos == null)
+            {
+                validMovimentos = new ValidateForm() { MdiParent = this };
 
-            //    validMovimentos.Show();
-            //}
-            //else
-            //{
-            //    validMovimentos.Activate();
-            //}
+                validMovimentos.Show();
+            }
+            else
+            {
+                validMovimentos.Activate();
+            }
         }
     }
 }

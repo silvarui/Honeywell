@@ -6,7 +6,14 @@ namespace EPE.BusinessLayer
 {
 	public class Movimento : Entity
 	{
-		public const string colIdMov = "IdMov";
+        private const string IMAGEPRINT = "IMAGEPRINT";
+        private const string BESR = "BESR BVRB PVBR";
+        private const string FRAIS = "Frais";
+        private const string MONTANT_SAISI = "Montant saisi";
+        private const string ENTREES_BVRB = "Entrees BVRB-QUICK";
+        private const string TRANSACTIONS_OFFERTES = "Transactions offertes";
+
+        public const string colIdMov = "IdMov";
 		public const string colDtEval = "DtEval";
 		public const string colRelBancaria = "RelBancaria";
 		public const string colPortofolio = "Portofolio";
@@ -51,7 +58,40 @@ namespace EPE.BusinessLayer
 		public double? Debito { get; set; }
 		public double? Credito { get; set; }
 		public double? Saldo { get; set; }
-		public override string[] GetColumnNames()
+
+        public string BVR
+        {
+            get
+            {
+                if (Descricao2 == BESR)
+                    return Descricao3.Substring(0, 10);
+
+                return !string.IsNullOrEmpty(Descricao1) && Descricao1.StartsWith(BESR) ? Descricao1.Substring(BESR.Length + 1) : string.Empty;
+            }
+        }
+
+        public double Valor
+        {
+            get { return Credito.HasValue ? Credito.Value : SubTotal.GetValueOrDefault(0); }
+        }
+
+        public bool CanBeValidated
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Descricao1) &&
+                    (Descricao1.StartsWith(ENTREES_BVRB) || Descricao1.StartsWith(FRAIS) || Descricao1.StartsWith(MONTANT_SAISI) ||
+                     Descricao1.StartsWith(TRANSACTIONS_OFFERTES)))
+                    return false;
+
+                if (!string.IsNullOrEmpty(Descricao3) && Descricao3.Contains(IMAGEPRINT))
+                    return false;
+
+                return Valor > 0 && DtValor != new DateTime();
+            }
+        }
+
+        public override string[] GetColumnNames()
 		{
 			var columns = new List<string>
 			{

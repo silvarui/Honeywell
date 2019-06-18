@@ -290,7 +290,7 @@ namespace EPE.BusinessLayer
 
                 alunos.Add(aluno);
 
-                boletim.Aluno = aluno;
+                boletim.IdAluno = aluno.IdAluno;
 
                 OnRowTreated(EventArgs.Empty);
 
@@ -310,7 +310,7 @@ namespace EPE.BusinessLayer
 
             OnRowTreated(EventArgs.Empty);
 
-            var distinctBoletins = boletins.GroupBy(b => new { b.Aluno.IdAluno, b.NumBoletim }).Select(g => g.First()).ToList();
+            var distinctBoletins = boletins.GroupBy(b => new { b.IdAluno, b.NumBoletim }).Select(g => g.First()).ToList();
 
             boletimAdapter.StoreBoletins(distinctBoletins);
 

@@ -1,28 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Configuration;
+using System.Runtime.CompilerServices;
 using EPE.BusinessLayer;
 
 namespace EPE.Gui.PresentationModels
 {
-    public class ImportModel : INotifyPropertyChanged
+    public class ImportModel : BasePresentationModel
     {
-	    private readonly string connectionString = ConfigurationManager.ConnectionStrings["EPEValidation"].ConnectionString;
-
-		  public enum ImportFileType
+	    public enum ImportFileType
         {
             Alunos,
             Movimentos
         }
 
         public ImportFileType FileType { get; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public event EventHandler<NumberOfRowsEventArgs> OnNumberOfRowsToImportDetermined;
 
@@ -69,11 +61,6 @@ namespace EPE.Gui.PresentationModels
         public ImportModel(ImportFileType importFileType)
         {
             FileType = importFileType;
-        }
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public void Importar()

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace EPE.BusinessLayer
 {
@@ -81,5 +82,29 @@ namespace EPE.BusinessLayer
                     throw (new InvalidPropertyException(GetType().Name, columnName));
             }
         }
+
+        public virtual object GetEntityKey()
+        {
+            return this;
+        }
+
+        #region UEID implementation
+        private Guid uEId = Guid.NewGuid();
+        /// <summary>
+        /// Unique entity identifier. This identifier is generated during instanciation and coppied during
+        /// cloning unless otherwise specified. It is preserved during a store but is not persisted in the database.
+        /// <remarks>Unlike PID this identifier exists at all times even if the entity hasn't been stored.</remarks>
+        /// </summary>
+        [XmlIgnore]
+        public Guid UEID { get { return this.uEId; } }
+
+        /// <summary>
+        /// This method coppies the UEID from the source entity, it should not be invoked from any class
+        /// other than EntityDBAdapter.
+        /// </summary>
+        /// <param name="value"></param>
+        [Obsolete("ATM there is no need for such a method, please discuss before removing this attribute", true)]
+        internal void PreserveUEID(Entity originalEntity) { this.uEId = originalEntity.UEID; }
+        #endregion
     }
 }
