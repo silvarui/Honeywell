@@ -259,6 +259,70 @@ BEGIN
 	FROM Boletins
 END
 GO
+
+if exists (select * from sysobjects where id = object_id('dbo.USP_STORE_MOVIMENTO') and sysstat & 0xf = 4)
+  drop procedure dbo.USP_STORE_MOVIMENTO
+GO
+
+CREATE PROCEDURE dbo.USP_STORE_MOVIMENTO
+	@DtEval datetime,
+    @RelBancaria float,
+    @Portofolio nvarchar(max),
+    @Produto nvarchar(max),
+    @IBAN nvarchar(max),
+    @Moeda nvarchar(255),
+    @DtInicio datetime,
+    @DtFim datetime,
+    @Descricao nvarchar(255),
+    @DtTransac datetime,
+    @DtContab datetime,
+    @DtValor datetime,
+    @Descricao1 nvarchar(max),
+    @Descricao2 nvarchar(max),
+    @Descricao3 nvarchar(max),
+    @NumTrans nvarchar(255),
+    @CursDevis nvarchar(255),
+    @SubTotal float,
+    @Debito float,
+    @Credito float,
+    @Saldo float
+AS
+BEGIN
+	INSERT Movimentos(DtEval, RelBancaria, Portofolio, Produto, IBAN, Moeda, DtInicio, DtFim, Descricao, DtTransac, DtContab, DtValor, Descricao1, Descricao2, Descricao3,
+		NumTrans, CursDevis, SubTotal, Debito, Credito, Saldo)
+	VALUES(@DtEval, @RelBancaria, @Portofolio, @Produto, @IBAN, @Moeda, @DtInicio, @DtFim, @Descricao, @DtTransac, @DtContab, @DtValor, @Descricao1, @Descricao2,
+		@Descricao3, @NumTrans,	@CursDevis, @SubTotal, @Debito, @Credito, @Saldo)
+END
+GO
+
+if exists (select * from sysobjects where id = object_id('dbo.USP_GET_MOVIMENTOS_TO_VALIDATE') and sysstat & 0xf = 4)
+  drop procedure dbo.USP_GET_MOVIMENTOS_TO_VALIDATE
+GO
+
+CREATE PROCEDURE dbo.USP_GET_MOVIMENTOS_TO_VALIDATE
+	@DtFrom varchar(23)
+AS
+BEGIN
+	SELECT IdMov, DtEval, RelBancaria, Portofolio, Produto, IBAN, Moeda, DtInicio, DtFim, Descricao, DtTransac, DtContab, DtValor, Descricao1, Descricao2, Descricao3,
+		NumTrans, CursDevis, SubTotal, Debito, Credito, Saldo
+	FROM Movimentos
+	WHERE DtValor >= convert(datetime, @DtFrom, 121)
+	and IdMov not in (SELECT IdMov FROM Validados)
+END
+GO
+
+if exists (select * from sysobjects where id = object_id('dbo.USP_GET_MOVIMENTOS') and sysstat & 0xf = 4)
+  drop procedure dbo.USP_GET_MOVIMENTOS
+GO
+
+CREATE PROCEDURE dbo.USP_GET_MOVIMENTOS
+AS
+BEGIN
+	SELECT IdMov, DtEval, RelBancaria, Portofolio, Produto, IBAN, Moeda, DtInicio, DtFim, Descricao, DtTransac, DtContab, DtValor, Descricao1, Descricao2, Descricao3,
+		NumTrans, CursDevis, SubTotal, Debito, Credito, Saldo
+	FROM Movimentos
+END
+GO
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------

@@ -18,6 +18,7 @@ namespace EPE.BusinessLayer
                 colIdAluno,
                 colNumBoletim,
             };
+
             return columns.ToArray();
         }
     }

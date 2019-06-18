@@ -12,7 +12,9 @@ namespace EPE.Gui.PresentationModels
 {
     public class ImportModel : INotifyPropertyChanged
     {
-        public enum ImportFileType
+	    private readonly string connectionString = ConfigurationManager.ConnectionStrings["EPEValidation"].ConnectionString;
+
+		  public enum ImportFileType
         {
             Alunos,
             Movimentos
@@ -93,18 +95,18 @@ namespace EPE.Gui.PresentationModels
 
         private void ImportarMovimentos()
         {
-            //var adapter = MovimentoAdapterFactory.GetMovimentoAdapter(ImportFilePath);
+			var adapter = MovimentoAdapterFactory.GetMovimentoAdapter(ImportFilePath, connectionString);
 
-            //adapter.NumberOfRowsToImportDetermined += Adapter_NumberOfRowsToImportDetermined;
-            //adapter.RowTreated += Adapter_RowTreated;
-            //adapter.DataImported += Adapter_DataImported;
+			adapter.NumberOfRowsToImportDetermined += Adapter_NumberOfRowsToImportDetermined;
+			adapter.RowTreated += Adapter_RowTreated;
+			adapter.DataImported += Adapter_DataImported;
 
-            //adapter.LoadData();
-        }
+			adapter.LoadData();
+		}
 
         private void ImportarAlunos()
         {
-            var adapter = new AlunoFileAdapter(ImportFilePath, ConfigurationManager.ConnectionStrings["EPEValidation"].ConnectionString);
+            var adapter = new AlunoFileAdapter(ImportFilePath, connectionString);
 
             adapter.NumberOfRowsToImportDetermined += Adapter_NumberOfRowsToImportDetermined;
             adapter.RowTreated += Adapter_RowTreated;

@@ -54,6 +54,7 @@ namespace EPE.BusinessLayer
                 colTelemovel,
                 colEmail
             };
+
             return columns.ToArray();
         }
     }
