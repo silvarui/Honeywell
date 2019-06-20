@@ -26,10 +26,44 @@ namespace EPE.BusinessLayer
                 colIdAluno,
                 colIdMov,
                 colDtValid,
+                Movimento.colDtValor,
+                Aluno.colUsername,
+                Aluno.colNome,
                 colValor
             };
 
             return columns.ToArray();
+        }
+
+        public override string[] GetGridViewColumns()
+        {
+            var columns = new List<string>
+            {
+                Movimento.colDtValor,
+                Aluno.colUsername,
+                Aluno.colNome,
+                colValor
+            };
+
+            return columns.ToArray();
+        }
+
+        public override object GetPLValue(string columnName)
+        {
+            switch (columnName)
+            {
+                case Movimento.colDtValor:
+                    return this.Movimento.DtValor.Value.ToString("dd-MM-yyyy");
+
+                case Aluno.colUsername:
+                    return Aluno.Username;
+
+                case Aluno.colNome:
+                    return Aluno.Nome;
+
+                default:
+                    return base.GetPLValue(columnName);
+            }
         }
     }
 
@@ -50,8 +84,17 @@ namespace EPE.BusinessLayer
         {
             switch (columnName)
             {
-                case Boletim.colIdAluno:
+                case Validado.colIdAluno:
                     record.Add(new DataElement(columnName, entity.Aluno.IdAluno));
+                    break;
+
+                case Validado.colIdMov:
+                    record.Add(new DataElement(columnName, entity.Movimento.IdMov));
+                    break;
+
+                case Movimento.colDtValor:
+                case Aluno.colUsername:
+                case Aluno.colNome:
                     break;
 
                 default:

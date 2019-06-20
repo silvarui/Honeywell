@@ -39,6 +39,40 @@ namespace EPE.Gui
             bsValidate.DataSource = validateModel;
 
             egvPorValidar.Initialize(typeof(Movimento), new List<Movimento>());
+            egvValidados.Initialize(typeof(Validado), new List<Validado>());
+        }
+
+        private void BtnAnalyze_Click(object sender, EventArgs e)
+        {
+            LongOperation.StartNonUIOperation(delegate
+            {
+                validateModel.PerformValidation();
+            });
+
+            LoadGridViews();
+
+            validateModel.CheckValidados();
+        }
+
+        private void LoadGridViews(bool afterSave = false)
+        {
+            egvValidados.Initialize(typeof(Validado), validateModel.Validados);
+
+            if (afterSave)
+                return;
+
+            egvPorValidar.SetEditableColumn(Movimento.colUsername);
+            egvPorValidar.Initialize(typeof(Movimento), validateModel.NaoValidados);
+        }
+
+        private void BtnSave_Click(object sender, EventArgs e)
+        {
+            LongOperation.StartNonUIOperation(delegate
+            {
+                validateModel.SaveValidation();
+            });
+
+            LoadGridViews(true);
         }
     }
 }

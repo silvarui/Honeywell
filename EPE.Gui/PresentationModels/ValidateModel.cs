@@ -9,7 +9,7 @@ namespace EPE.Gui.PresentationModels
     {
         private readonly List<Aluno> alunos;
         private List<Movimento> movimentosToValidate;
-        private List<Validado> validados;
+        public List<Validado> Validados { get; }
 
         private DateTime dateFrom;
         public DateTime DateFrom
@@ -30,11 +30,16 @@ namespace EPE.Gui.PresentationModels
             get { return alunos.Count > 0 && movimentosToValidate.Count > 0; }
         }
 
-        private List<Movimento> NaoValidados
+        public bool CanSave
+        {
+            get { return Validados.Count > 0; }
+        }
+
+        public List<Movimento> NaoValidados
         {
             get
             {
-                return movimentosToValidate.Where(m => m.CanBeValidated && !validados.Exists(v => v.Movimento.IdMov == m.IdMov)).ToList();
+                return movimentosToValidate.Where(m => m.CanBeValidated && !Validados.Exists(v => v.Movimento.IdMov == m.IdMov)).ToList();
             }
         }      
 
@@ -43,7 +48,7 @@ namespace EPE.Gui.PresentationModels
             alunos = new AlunoAdapter(connectionString).GetAlunos();
 
             movimentosToValidate = new List<Movimento>();
-            validados = new List<Validado>();
+            Validados = new List<Validado>();
         }
 
         private void LoadMovimentos()
@@ -53,15 +58,15 @@ namespace EPE.Gui.PresentationModels
             OnPropertyChanged(nameof(CanValidate));
         }
 
+        public void CheckValidados()
+        {
+            OnPropertyChanged(nameof(CanSave));
+        }
+
         public void PerformValidation()
         {
             foreach (var mov in NaoValidados)
             {
-                //var boletim = boletins.FirstOrDefault(b => b.NumBoletim == mov.BVR);
-
-                //if (boletim == null)
-                //    continue;
-
                 var aluno = alunos.FirstOrDefault(a => a.Boletins.Exists(b => b.NumBoletim == mov.BVR));
 
                 if (aluno == null)
@@ -73,13 +78,27 @@ namespace EPE.Gui.PresentationModels
 
         private void ValidateMovimento(Movimento movimento, Aluno aluno)
         {
-            validados.Add(new Validado
+            Validados.Add(new Validado
             {
                 Movimento = movimento,
                 Aluno = aluno,
                 DtValid = DateTime.Now.Date,
                 Valor = movimento.Valor
             });
+        }
+
+        public void SaveValidation()
+        {
+            try
+            {
+                new ValidadoAdapter(connectionString).StoreValidados(Validados);
+
+                Validados.Clear();
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

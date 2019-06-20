@@ -47,8 +47,9 @@
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(491, 254);
             this.tableLayoutPanel1.TabIndex = 10;
             // 
@@ -65,26 +66,34 @@
             this.dataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dataGrid.GridColor = System.Drawing.SystemColors.ControlLight;
-            this.dataGrid.Location = new System.Drawing.Point(3, 17);
+            this.dataGrid.Location = new System.Drawing.Point(3, 28);
             this.dataGrid.Name = "dataGrid";
             this.dataGrid.RowHeadersVisible = false;
             this.dataGrid.RowTemplate.Height = 24;
             this.dataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGrid.Size = new System.Drawing.Size(485, 234);
+            this.dataGrid.Size = new System.Drawing.Size(485, 223);
             this.dataGrid.StandardTab = true;
             this.dataGrid.TabIndex = 1;
+            this.dataGrid.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellClick);
+            this.dataGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellEndEdit);
+            this.dataGrid.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellEnter);
+            this.dataGrid.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellLeave);
+            this.dataGrid.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.OnRowsAdded);
+            this.dataGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.OnRowsRemoved);
             // 
             // lblGridText
             // 
             this.lblGridText.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.lblGridText, 2);
+            this.lblGridText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblGridText.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.lblGridText.Location = new System.Drawing.Point(3, 0);
             this.lblGridText.Name = "lblGridText";
             this.lblGridText.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.lblGridText.Size = new System.Drawing.Size(70, 13);
+            this.lblGridText.Size = new System.Drawing.Size(97, 20);
             this.lblGridText.TabIndex = 0;
             this.lblGridText.Text = "Total in list:";
+            this.lblGridText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // EntityGridView
             // 
@@ -93,6 +102,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "EntityGridView";
             this.Size = new System.Drawing.Size(491, 254);
+            this.Load += new System.EventHandler(this.EntityGridView_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).EndInit();

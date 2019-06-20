@@ -43,21 +43,23 @@
             this.txtDestFolder = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.bsValidate = new System.Windows.Forms.BindingSource(this.components);
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabToValidate = new System.Windows.Forms.TabPage();
-            this.tabValidated = new System.Windows.Forms.TabPage();
-            this.tabAnalyzed = new System.Windows.Forms.TabPage();
             this.egvPorValidar = new EPE.Controls.EntityGridView();
+            this.tabValidated = new System.Windows.Forms.TabPage();
+            this.egvValidados = new EPE.Controls.EntityGridView();
+            this.tabAnalyzed = new System.Windows.Forms.TabPage();
+            this.bsValidate = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.grpValidate.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bsValidate)).BeginInit();
             this.tabMain.SuspendLayout();
             this.tabToValidate.SuspendLayout();
+            this.tabValidated.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bsValidate)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -94,6 +96,7 @@
             // 
             // dtDateFrom
             // 
+            this.dtDateFrom.DataBindings.Add(new System.Windows.Forms.Binding("Value", this.bsValidate, "DateFrom", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.dtDateFrom.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtDateFrom.Location = new System.Drawing.Point(76, 23);
             this.dtDateFrom.Name = "dtDateFrom";
@@ -112,6 +115,7 @@
             // btnAnalyze
             // 
             this.btnAnalyze.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnAnalyze.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.bsValidate, "CanValidate", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.btnAnalyze.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAnalyze.Location = new System.Drawing.Point(42, 56);
             this.btnAnalyze.Name = "btnAnalyze";
@@ -119,6 +123,7 @@
             this.btnAnalyze.TabIndex = 9;
             this.btnAnalyze.Text = "Validar";
             this.btnAnalyze.UseVisualStyleBackColor = true;
+            this.btnAnalyze.Click += new System.EventHandler(this.BtnAnalyze_Click);
             // 
             // groupBox1
             // 
@@ -140,6 +145,7 @@
             // btnSave
             // 
             this.btnSave.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnSave.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.bsValidate, "CanSave", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSave.Location = new System.Drawing.Point(83, 56);
             this.btnSave.Name = "btnSave";
@@ -147,6 +153,7 @@
             this.btnSave.TabIndex = 19;
             this.btnSave.Text = "Salvar Validação";
             this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
             // 
             // btnExportPorValidar
             // 
@@ -209,10 +216,6 @@
             this.label4.TabIndex = 11;
             this.label4.Text = "Pasta destino";
             // 
-            // bsValidate
-            // 
-            this.bsValidate.DataSource = typeof(EPE.Gui.PresentationModels.ValidateModel);
-            // 
             // tabMain
             // 
             this.tabMain.Controls.Add(this.tabToValidate);
@@ -236,8 +239,18 @@
             this.tabToValidate.Text = "Por validar";
             this.tabToValidate.UseVisualStyleBackColor = true;
             // 
+            // egvPorValidar
+            // 
+            this.egvPorValidar.ColumnInfos = null;
+            this.egvPorValidar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.egvPorValidar.Location = new System.Drawing.Point(3, 3);
+            this.egvPorValidar.Name = "egvPorValidar";
+            this.egvPorValidar.Size = new System.Drawing.Size(1038, 603);
+            this.egvPorValidar.TabIndex = 0;
+            // 
             // tabValidated
             // 
+            this.tabValidated.Controls.Add(this.egvValidados);
             this.tabValidated.Location = new System.Drawing.Point(4, 22);
             this.tabValidated.Name = "tabValidated";
             this.tabValidated.Padding = new System.Windows.Forms.Padding(3);
@@ -245,6 +258,15 @@
             this.tabValidated.TabIndex = 1;
             this.tabValidated.Text = "Validados";
             this.tabValidated.UseVisualStyleBackColor = true;
+            // 
+            // egvValidados
+            // 
+            this.egvValidados.ColumnInfos = null;
+            this.egvValidados.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.egvValidados.Location = new System.Drawing.Point(3, 3);
+            this.egvValidados.Name = "egvValidados";
+            this.egvValidados.Size = new System.Drawing.Size(1038, 603);
+            this.egvValidados.TabIndex = 1;
             // 
             // tabAnalyzed
             // 
@@ -256,14 +278,9 @@
             this.tabAnalyzed.Text = "Analisados";
             this.tabAnalyzed.UseVisualStyleBackColor = true;
             // 
-            // egvPorValidar
+            // bsValidate
             // 
-            this.egvPorValidar.ColumnInfos = null;
-            this.egvPorValidar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.egvPorValidar.Location = new System.Drawing.Point(3, 3);
-            this.egvPorValidar.Name = "egvPorValidar";
-            this.egvPorValidar.Size = new System.Drawing.Size(1038, 603);
-            this.egvPorValidar.TabIndex = 0;
+            this.bsValidate.DataSource = typeof(EPE.Gui.PresentationModels.ValidateModel);
             // 
             // ValidateForm
             // 
@@ -272,6 +289,8 @@
             this.ClientSize = new System.Drawing.Size(1052, 737);
             this.Controls.Add(this.tabMain);
             this.Controls.Add(this.splitContainer1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "ValidateForm";
             this.Text = "ValidateForm";
             this.Load += new System.EventHandler(this.ValidateForm_Load);
@@ -283,9 +302,10 @@
             this.grpValidate.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bsValidate)).EndInit();
             this.tabMain.ResumeLayout(false);
             this.tabToValidate.ResumeLayout(false);
+            this.tabValidated.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.bsValidate)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -312,5 +332,6 @@
         private System.Windows.Forms.TabPage tabValidated;
         private System.Windows.Forms.TabPage tabAnalyzed;
         private Controls.EntityGridView egvPorValidar;
+        private Controls.EntityGridView egvValidados;
     }
 }

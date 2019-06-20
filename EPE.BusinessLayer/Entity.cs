@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -18,6 +19,11 @@ namespace EPE.BusinessLayer
         public const string StringNo = "N";
 
         public abstract string[] GetColumnNames();
+
+        public virtual string[] GetGridViewColumns()
+        {
+            return null;
+        }
         
         public virtual object this[string columnName]
         {
@@ -86,6 +92,17 @@ namespace EPE.BusinessLayer
         public virtual object GetEntityKey()
         {
             return this;
+        }
+
+        public virtual object GetPLValue(string columnName)
+        {
+            object theField = this[columnName];
+            if (theField is DateTime)
+            {
+                return ((DateTime)theField).ToString("dd-MM-yyyy");
+            }
+            else
+                return theField; //the object itself
         }
 
         #region UEID implementation

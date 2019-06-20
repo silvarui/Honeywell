@@ -34,7 +34,6 @@ namespace EPE.Controls
         {
             public string ColumnName;
             public OnlineEditType EditType;
-            public object[] Values;
         }
 
         private Dictionary<string, OnlineEditInfo> editableColumns;
@@ -46,8 +45,7 @@ namespace EPE.Controls
         private Type entityType;
 
         private int lastWidth = 0;
-        private int imgIndex = 0;
-
+        
         //ability to make individual cells read only, not just entire columns;
         IEntityGridViewEnabledCell entityGridViewEnabledCell;
 
@@ -80,10 +78,8 @@ namespace EPE.Controls
             {
                 entity = (Entity)Activator.CreateInstance(entType);
             }
-
-
+            
             //set the default row height
-
             dataGrid.RowTemplate.Height = MinRowHeight;
 
             if (this.lastWidth != GridWidth())
@@ -95,8 +91,6 @@ namespace EPE.Controls
             CreateGridColumns(entity); //creates grid's columns
             PopulateGrid(); //populate grid with rows (if the initial entity list passed was not empty)
             
-            ////ExpandHorizontallyIfNeeded(); //check if there is need for horizontal scroll
-            //dataGrid.MultiSelect = AllowMultiSelect;
             //if (HasContextMenu)
             //    FillContextMenu(); //fill context menu
             dataGrid.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
@@ -190,6 +184,19 @@ namespace EPE.Controls
             }
         }
 
+        private void ShowCount()
+        {
+            lblGridText.Text = string.Format("Total de registos: {0}", Count.ToString());
+        }
+
+        public int Count
+        {
+            get
+            {
+                return dataGrid.Rows.Count;
+            }
+        }
+
         //clears all the grid
         private void ClearGridData()
         {
@@ -206,29 +213,35 @@ namespace EPE.Controls
 
         private void GetDefaultColumnInfos(Entity entity)
         {
-            ColumnInfos = entity.GetColumnNames().Where(n => !n.Contains("Id")).ToArray();
-            
-            //fitGridColumnsToScreen = true;
+            ColumnInfos = entity.GetColumnNames().Where(n => !n.Contains("Id")).ToArray();            
+        }
+
+        //sets a column as editable in a text box
+        public void SetEditableColumn(string colName)
+        {
+            if (editableColumns == null)
+                editableColumns = new Dictionary<string, OnlineEditInfo>();
+            OnlineEditInfo editInfo = new OnlineEditInfo();
+            editInfo.ColumnName = colName;
+            editInfo.EditType = OnlineEditType.Normal;
+            editableColumns[colName] = editInfo;
         }
 
         private void CreateGridColumns(Entity entity)
         {
             dataGrid.Columns.Clear();
-            //dataGrid.ColumnHeadersVisible = ShowColumnHeaders;
-
-            //if (!fitGridColumnsToScreen)
-            dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-            //else
-            //    dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-
+                        
+            dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            
             //The real Entity's columns            
             DataGridViewColumn gridColumn;
             OnlineEditInfo editInfo;
             foreach (string colInfo in ColumnInfos)
             {
+                if (!entity.GetGridViewColumns().Contains(colInfo))
+                    continue;
+
                 gridColumn = null;
-                //columnValueType = entity.GetPLColumnType(colInfo.Name);
 
                 editInfo = null;
                 if (editableColumns != null && editableColumns.ContainsKey(colInfo))
@@ -240,8 +253,7 @@ namespace EPE.Controls
 
                 gridColumn.Name = colInfo;
                 gridColumn.HeaderText = colInfo;
-                //gridColumn.HeaderText = (colInfo.Name != Entity.colGuiSymbol ?
-                //                 entity.GetPLColumnTitle(colInfo.Name, Entity.PLTypes.Gui, this.CurrentDS, this.CurrentCtxt) : "");
+
                 gridColumn.ReadOnly = (editInfo == null);
 
                 if (gridColumn.ReadOnly)
@@ -253,13 +265,38 @@ namespace EPE.Controls
             }
         }
 
+        public void RemoveEntity(Entity entity)
+        {
+            DataGridViewRow row = FindRow(entity);
+
+            if (row == null)
+                return;
+
+            dataGrid.Rows.Remove(row);
+        }
+
+        public void AddEntity(Entity entity)
+        {
+            object[] rowArray = CreateEntityRow(entity);
+
+            DataGridViewRow newRow = new DataGridViewRow();
+            newRow.CreateCells(dataGrid, rowArray);
+            newRow.Tag = entity;
+            if (entityGridViewEnabledCell != null)
+                entityGridViewEnabledCell.EnableCell(newRow, ColumnInfos);
+            dataGrid.Rows.Add(newRow);
+
+            //int rowHeight = CalculateRowHeight();
+            //if (rowHeight > 0)
+            //    newRow.Height = rowHeight;
+
+            //scroll to the last added row             
+            dataGrid.CurrentCell = newRow.Cells[2];
+        }
+
         //populate grid with the initial list of entities
         private void PopulateGrid()
         {
-            bool find = false;
-           
-            if (!find) this.imgIndex = -1;
-
             if (entityList != null)
             {
                 foreach (object entity in entityList)
@@ -267,62 +304,6 @@ namespace EPE.Controls
             }
         }
 
-        //private void ExpandHorizontallyIfNeeded()
-        //{
-        //    if (!fitGridColumnsToScreen)
-        //    {
-        //        dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-        //        double enlgargementFactor = (double)System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width / (double)this.ParentForm.Size.Width;
-        //        //dirty algorithm to determine the enlargement factor
-        //        if (dataGrid.Columns.Count >= 20)
-        //            enlgargementFactor *= 1.5;
-
-        //        int missedWidth = 0;
-        //        foreach (DataGridViewColumn col in dataGrid.Columns)
-        //        {
-        //            if (col.Resizable == DataGridViewTriState.True)
-        //            {
-        //                col.Width = (int)(col.Width * enlgargementFactor) + missedWidth; //enlarge column
-        //                missedWidth = 0;
-        //            }
-        //            else
-        //                missedWidth += (int)(col.Width * enlgargementFactor) - col.Width; // This is the width of the not resizable columns
-        //        }
-        //    }
-        //    else
-        //    {
-        //        int i = 0;
-        //        List<int> colIdx = new List<int>();
-        //        List<int> colWidth = new List<int>();
-
-        //        //Before change to AutoSize = Fill, I save the width for the Image Coluns
-        //        //to restore then after the auto size, to keep then unchangeable and more nice.
-
-        //        foreach (DataGridViewColumn col in dataGrid.Columns)
-        //        {
-        //            if (col is DataGridViewImageColumn)
-        //            {
-        //                colIdx.Add(i);
-        //                colWidth.Add(col.Width);
-        //            }
-        //            ++i;
-        //        }
-
-        //        //dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-        //        for (i = 0; i < colIdx.Count; ++i)
-        //        {
-        //            dataGrid.Columns[colIdx[i]].Width = GetMaxStateImageWidth(); // colWidth[i];
-        //        }
-
-        //        if (showSelectComboBox)
-        //        {
-        //            dataGrid.Columns[0].Width = 50;
-        //        }
-        //    }
-        //}
-        
-        //adds an entity to the list
         private void AddEntityNoScroll(Entity entity)
         {
             object[] rowArray = CreateEntityRow(entity);
@@ -333,8 +314,6 @@ namespace EPE.Controls
             if (entityGridViewEnabledCell != null)
                 entityGridViewEnabledCell.EnableCell(newRow, ColumnInfos);
             dataGrid.Rows.Add(newRow);
-
-
         }
 
         private object[] CreateEntityRow(Entity entity)
@@ -344,11 +323,134 @@ namespace EPE.Controls
             int i = 0;
             foreach (string colInfo in ColumnInfos)
             {
-                object value = entity[colInfo];
+                if (!entity.GetGridViewColumns().Contains(colInfo))
+                    continue;
+
+                object value = entity.GetPLValue(colInfo);
                 rowArray[i++] = value;
             }
             return rowArray;
         }
+
+        private Dictionary<string, Color> cellSelectionBgColor = new Dictionary<string, Color>();
+        private Dictionary<string, Color> cellBgColor = new Dictionary<string, Color>();
+
+        private void OnCellEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            string cellName = string.Format(e.ColumnIndex.ToString("0000") + e.RowIndex.ToString("0000"));
+
+            cellSelectionBgColor[cellName] = dataGrid.CurrentCell.Style.SelectionBackColor;
+            cellBgColor[cellName] = dataGrid.CurrentCell.Style.BackColor;
+
+            if (!dataGrid.CurrentCell.ReadOnly && dataGrid.CurrentCell is DataGridViewCheckBoxCell == false)
+            {
+                dataGrid.CurrentCell.Style.BackColor = Color.Yellow;
+                dataGrid.CurrentCell.Style.SelectionBackColor = Color.Blue;
+
+                dataGrid.BeginEdit(true);
+            }
+        }
+
+        private void OnCellLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            string cellName = string.Format(e.ColumnIndex.ToString("0000") + e.RowIndex.ToString("0000"));
+
+            dataGrid.CurrentCell.Style.BackColor = cellBgColor[cellName];
+            dataGrid.CurrentCell.Style.SelectionBackColor = cellSelectionBgColor[cellName];
+        }
+
+        //this event will be fired when cell is clicked
+        public event DataGridViewCellEventHandler CellClicked;
+        private void OnCellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                if (dataGrid.CurrentCell != null)
+                {
+                    dataGrid.BeginEdit(true);
+
+                    CellClicked?.Invoke(this, new DataGridViewCellEventArgs(dataGrid.CurrentCell.ColumnIndex, dataGrid.CurrentCell.RowIndex));
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+        }
+
+        private object cellValueOnBeginEdit;
+        private void OnCellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            try
+            {
+                cellValueOnBeginEdit = null;
+                if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+                    cellValueOnBeginEdit = dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+            }
+            catch (InvalidOperationException ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+        }
+
+        //this event will be fired a cell value is changed in the grid
+        public event EventHandler<GridValueChangedEventArgs> GridValueChanged;
+        private void OnCellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                object crtValue = null;
+                if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+                {
+                    crtValue = dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                }
+                cellValueOnBeginEdit = null;
+            }
+            catch (InvalidOperationException ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+        }
+
+        private void EntityGridView_Load(object sender, EventArgs e)
+        {
+            ShowCount();
+        }
+
+        private void OnRowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            ShowCount();
+        }
+
+        private void OnRowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            ShowCount();
+        }
+    }
+
+    public class GridValueChangedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridValueChangedEventArgs"/> class.
+        /// </summary>
+        /// <param name="sourceEntity">The source entity.</param>
+        public GridValueChangedEventArgs(Entity sourceEntity)
+        {
+            SourceEntity = sourceEntity;
+        }
+
+        private Entity _sourceEntity;
+
+        /// <summary>
+        /// Gets or sets the source entity.
+        /// </summary>
+        /// <value>The source entity.</value>
+        public Entity SourceEntity
+        {
+            get { return _sourceEntity; }
+            set { _sourceEntity = value; }
+        }
+
     }
 
     public class EntityGridViewSort

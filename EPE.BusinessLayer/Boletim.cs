@@ -11,6 +11,8 @@ namespace EPE.BusinessLayer
         public int IdAluno { get; set; }
         public string NumBoletim { get; set; }
 
+        public Aluno Aluno { get; set; }
+
         public override string[] GetColumnNames()
         {
             var columns = new List<string>
@@ -32,6 +34,20 @@ namespace EPE.BusinessLayer
         public BoletimAdapter(string connectionString)
             : base(connectionString)
         {
+        }
+
+        protected override void CopyEntityColumnToRecord(string columnName, Boletim entity, ref Record record)
+        {
+	        switch (columnName)
+	        {
+		        case Boletim.colIdAluno:
+					record.Add(new DataElement(columnName, entity.Aluno.IdAluno));
+					break;
+
+		        default:
+			        base.CopyEntityColumnToRecord(columnName, entity, ref record);
+			        break;
+	        }
         }
 
         public void StoreBoletins(List<Boletim> boletinsToStore)

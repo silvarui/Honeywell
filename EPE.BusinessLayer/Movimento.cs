@@ -35,6 +35,9 @@ namespace EPE.BusinessLayer
 		public const string colDebito = "Debito";
 		public const string colCredito = "Credito";
 		public const string colSaldo = "Saldo";
+
+        public const string colValor = "Valor";
+        public const string colUsername = "Username";
 		
 		public int IdMov { get; set; }
 		public DateTime? DtEval { get; set; }
@@ -91,11 +94,12 @@ namespace EPE.BusinessLayer
             }
         }
 
+        public string Username { get; } = string.Empty;
+
         public override string[] GetColumnNames()
 		{
 			var columns = new List<string>
 			{
-				//colIdMov,
 				colDtEval,
 				colRelBancaria,
 				colPortofolio,
@@ -116,12 +120,29 @@ namespace EPE.BusinessLayer
 				colSubTotal,
 				colDebito,
 				colCredito,
-				colSaldo
+				colSaldo,
+                colValor,
+                colUsername
 			};
 
 			return columns.ToArray();
 		}
-	}
+
+        public override string[] GetGridViewColumns()
+        {
+            var columns = new List<string>
+            {
+				colValor,
+                colDescricao1,
+                colDescricao2,
+                colDescricao3,
+                colDtValor,
+                colUsername
+            };
+
+            return columns.ToArray();
+        }
+    }
 
 	public class MovimentoAdapter : EntityDbAdapter<Movimento>
 	{
@@ -161,5 +182,19 @@ namespace EPE.BusinessLayer
 
 			return movimentos;
 		}
-	}
+
+        protected override void CopyEntityColumnToRecord(string columnName, Movimento entity, ref Record record)
+        {
+            switch (columnName)
+            {
+                case Movimento.colUsername:
+                case Movimento.colValor:
+                    break;
+
+                default:
+                    base.CopyEntityColumnToRecord(columnName, entity, ref record);
+                    break;
+            }
+        }
+    }
 }

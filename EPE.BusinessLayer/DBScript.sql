@@ -331,12 +331,12 @@ GO
 CREATE PROCEDURE dbo.USP_STORE_VALIDADO
 	@IdMov int,
 	@IdAluno int,
-	@DtValidado datetime,
+	@DtValid datetime,
     @Valor float
 AS
 BEGIN
 	INSERT Validados(IdMov, IdAluno, DtValid, Valor)
-	VALUES(@IdMov, @IdAluno, @DtValidado, @Valor)
+	VALUES(@IdMov, @IdAluno, @DtValid, @Valor)
 END
 GO
 
