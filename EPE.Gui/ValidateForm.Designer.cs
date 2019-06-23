@@ -158,6 +158,7 @@
             // btnExportPorValidar
             // 
             this.btnExportPorValidar.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnExportPorValidar.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.bsValidate, "CanExport", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.btnExportPorValidar.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnExportPorValidar.Location = new System.Drawing.Point(596, 56);
             this.btnExportPorValidar.Name = "btnExportPorValidar";
@@ -165,10 +166,12 @@
             this.btnExportPorValidar.TabIndex = 18;
             this.btnExportPorValidar.Text = "Exportar não validados";
             this.btnExportPorValidar.UseVisualStyleBackColor = true;
+            this.btnExportPorValidar.Click += new System.EventHandler(this.BtnExportPorValidar_Click);
             // 
             // btnSaveAndExport
             // 
             this.btnSaveAndExport.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnSaveAndExport.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.bsValidate, "CanExport", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.btnSaveAndExport.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSaveAndExport.Location = new System.Drawing.Point(310, 56);
             this.btnSaveAndExport.Name = "btnSaveAndExport";
@@ -176,6 +179,7 @@
             this.btnSaveAndExport.TabIndex = 17;
             this.btnSaveAndExport.Text = "Guardar e Exportar Validados";
             this.btnSaveAndExport.UseVisualStyleBackColor = true;
+            this.btnSaveAndExport.Click += new System.EventHandler(this.BtnSaveAndExport_Click);
             // 
             // btnLimparExportFolder
             // 
@@ -186,6 +190,7 @@
             this.btnLimparExportFolder.TabIndex = 14;
             this.btnLimparExportFolder.Text = "Limpar";
             this.btnLimparExportFolder.UseVisualStyleBackColor = true;
+            this.btnLimparExportFolder.Click += new System.EventHandler(this.BtnLimparExportFolder_Click);
             // 
             // btnSelectExportFolder
             // 
@@ -196,11 +201,13 @@
             this.btnSelectExportFolder.TabIndex = 12;
             this.btnSelectExportFolder.Text = "Seleccionar";
             this.btnSelectExportFolder.UseVisualStyleBackColor = true;
+            this.btnSelectExportFolder.Click += new System.EventHandler(this.BtnSelectExportFolder_Click);
             // 
             // txtDestFolder
             // 
             this.txtDestFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDestFolder.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bsValidate, "ExportFolder", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.txtDestFolder.Location = new System.Drawing.Point(83, 23);
             this.txtDestFolder.Name = "txtDestFolder";
             this.txtDestFolder.ReadOnly = true;

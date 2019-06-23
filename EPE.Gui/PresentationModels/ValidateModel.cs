@@ -2,11 +2,19 @@
 using EPE.BusinessLayer;
 using System;
 using System.Linq;
+using System.IO;
 
 namespace EPE.Gui.PresentationModels
 {
     public class ValidateModel : BasePresentationModel
     {
+        public event EventHandler OnDataExported;
+
+        private enum ExporType
+        {
+            Validados,
+            NaoValidados
+        }
         private readonly List<Aluno> alunos;
         private List<Movimento> movimentosToValidate;
         public List<Validado> Validados { get; }
@@ -23,6 +31,22 @@ namespace EPE.Gui.PresentationModels
 
                 OnPropertyChanged(nameof(DateFrom));
             }
+        }
+
+        public string exportFolder;
+        public string ExportFolder
+        {
+            get { return exportFolder; }
+            set
+            {
+                exportFolder = value;
+
+                OnPropertyChanged(nameof(ExportFolder));
+            }
+        }
+        public bool CanExport
+        {
+            get { return !string.IsNullOrEmpty(ExportFolder); }
         }
 
         public bool CanValidate
@@ -99,6 +123,46 @@ namespace EPE.Gui.PresentationModels
             {
                 throw;
             }
+        }
+
+        public void SaveValidationAndExport()
+        {
+            try
+            {
+                var adapter = new ValidadoAdapter(connectionString);
+
+                if (Validados.Count > 0)
+                {
+                    adapter.StoreValidados(Validados);
+                }
+
+                Export(ExporType.Validados);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public void ExportarPorValidar()
+        {
+            Export(ExporType.NaoValidados);
+        }
+
+        private void Export(ExporType exporType)
+        {
+            var fileToExport = Path.Combine(ExportFolder, exporType == ExporType.Validados ? "Validados.xlsx" : "Por_Validar.xlsx");
+
+            if (exporType == ExporType.Validados)
+            {
+                new ValidadoFileAdapter(fileToExport, connectionString).ExportValidados(DateFrom);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            OnDataExported?.Invoke(this, null);
         }
     }
 }

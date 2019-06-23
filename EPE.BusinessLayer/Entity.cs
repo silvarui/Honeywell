@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 namespace EPE.BusinessLayer
 {
-    public abstract class Entity
+    public abstract class Entity : IExportEntity
     {
         private const BindingFlags C_BINDING_FLAGS = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance;
 
@@ -24,7 +24,12 @@ namespace EPE.BusinessLayer
         {
             return null;
         }
-        
+
+        public virtual string GetColumnType(string columnName)
+        {
+            return string.Empty;
+        }
+
         public virtual object this[string columnName]
         {
             get

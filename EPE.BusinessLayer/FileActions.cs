@@ -7,9 +7,16 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using Microsoft.VisualBasic.FileIO;
+using System.Collections;
 
 namespace EPE.BusinessLayer
 {
+    public interface IExportEntity
+    {
+        string GetColumnType(string columnName);
+        string[] GetColumnNames();
+    }
+
     public class NumberOfRowsEventArgs : EventArgs
     {
         public int NumberOfRows { get; set; }
@@ -51,6 +58,110 @@ namespace EPE.BusinessLayer
         }
     }
 
+    public abstract class ExcelExportFileAdapter<T> : ExcelFileAdapter
+        where T : class, IExportEntity, new()
+    {
+        private readonly string tableName;
+
+        protected ExcelExportFileAdapter(string filePath, string connectionString, string tableName)
+            : base(filePath, connectionString)
+        {
+            this.tableName = tableName;
+        }
+
+        protected override void ImportRows(DataRowCollection dataRows)
+        {
+        }
+
+        protected override List<string> GetColumnNames()
+        {
+            return null;
+        }
+
+        private string GetInsertQuery(Entity entityToStore)
+        {
+            try
+            {
+                StringBuilder sbColumns = new StringBuilder();
+                StringBuilder sbValues = new StringBuilder();
+
+                foreach (var str in entityToStore.GetColumnNames())
+                {
+                    var valToStore = entityToStore.GetPLValue(str);
+
+                    if (valToStore != null && valToStore.ToString().Contains("'"))
+                        valToStore = valToStore.ToString().Replace("'", string.Empty);
+
+                    sbColumns.Append("[" + str + "],");
+                    sbValues.Append("'" + valToStore + "',");
+                }
+
+                return string.Format("INSERT INTO {0} ({1}) VALUES({2});", tableName, sbColumns.ToString().Remove(sbColumns.Length - 1, 1), sbValues.ToString().Remove(sbValues.Length - 1, 1));
+            }
+            catch (Exception ex)
+            {
+                var a = ex.Message;
+            }
+
+            return string.Empty;
+        }
+
+        private string CreateTableQuery(Entity entity)
+        {   
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var str in entity.GetColumnNames())
+            {
+                var columnType = entity.GetColumnType(str);
+
+                if (string.IsNullOrEmpty(columnType))
+                    continue;
+
+                sb.Append(string.Format("[{0}] {1},", str, columnType));
+            }
+
+            return string.Format("CREATE TABLE {0} ({1});", tableName, sb.ToString().Remove(sb.Length - 1, 1));
+        }
+
+        protected void ExportData(IList entitiesToStore)
+        {
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+
+            string connectionString = GetConnectionString(false);
+
+            using (OleDbConnection conn = new OleDbConnection(connectionString))
+            {
+                try
+                {
+                    Entity entity = (entitiesToStore != null && entitiesToStore.Count > 0) ? (Entity)entitiesToStore[0] : null;
+                    if (entity == null)
+                    {
+                        return;
+                    }
+
+                    conn.Open();
+                    OleDbCommand cmd = new OleDbCommand
+                    {
+                        Connection = conn,
+                        CommandText = CreateTableQuery(entity)
+                    };
+                    cmd.ExecuteNonQuery();
+
+                    foreach (var entityToStore in entitiesToStore)
+                    {
+                        cmd.CommandText = GetInsertQuery((Entity)entityToStore);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+    }
+
     public abstract class ExcelFileAdapter : FileAdapterBase
     {
         protected ExcelFileAdapter(string filePath, string connectionString)
@@ -62,17 +173,17 @@ namespace EPE.BusinessLayer
 
         protected abstract void ImportRows(DataRowCollection dataRows);
 
-        private string GetConnectionString()
+        protected string GetConnectionString(bool forRead = true)
         {
             var fileExtension = Path.GetExtension(filePath);
 
             switch (fileExtension)
             {
                 case ".xls":
-                    return "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + filePath + ";" + "Extended Properties='Excel 8.0;HDR=YES;IMEX=1;'";
+                    return string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + filePath + ";" + "Extended Properties='Excel 8.0;HDR=YES;IMEX={0};'", Convert.ToInt32(forRead));
 
                 case ".xlsx":
-                    return "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + filePath + ";" + "Extended Properties='Excel 12.0 Xml;HDR=YES;IMEX=1;'";
+                    return string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + filePath + ";" + "Extended Properties='Excel 12.0 Xml;HDR=YES;IMEX={0};'", Convert.ToInt32(forRead));
 
                 default:
                     throw new NotSupportedException();
@@ -318,7 +429,24 @@ namespace EPE.BusinessLayer
         }
     }
 
-	public class MovimentoExcelAdapter : ExcelFileAdapter
+    public class ValidadoFileAdapter : ExcelExportFileAdapter<ValidadoForExport>
+    {
+        private const string TABLENAME = "Validados";
+
+        public ValidadoFileAdapter(string filePath, string connectionString)
+            : base(filePath, connectionString, TABLENAME)
+        {
+        }      
+
+        public void ExportValidados(DateTime dateFrom)
+        {
+            var validadosToStore = new ValidadoForExportAdapter(ConnectionString).GetValidadosForExport(dateFrom);
+
+            ExportData(validadosToStore);
+        }
+    }
+
+    public class MovimentoExcelAdapter : ExcelFileAdapter
 	{
 		public MovimentoExcelAdapter(string filePath, string connectionString)
 			: base(filePath, connectionString)
@@ -767,8 +895,9 @@ namespace EPE.BusinessLayer
 			}
 		}
 	}
+
 	public static class MovimentoAdapterFactory
-   {
+    {
 	   public static FileAdapterBase GetMovimentoAdapter(string filePath, string connectionString)
 	    {
 		    string fileExtension = Path.GetExtension(filePath);
@@ -778,5 +907,5 @@ namespace EPE.BusinessLayer
 
 		    return new MovimentoExcelAdapter(filePath, connectionString);
 	    }
-   }
+    }
 }

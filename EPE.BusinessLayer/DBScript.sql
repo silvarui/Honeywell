@@ -353,6 +353,22 @@ BEGIN
 	WHERE IdAluno = @IdAluno
 END
 GO
+
+if exists (select * from sysobjects where id = object_id('dbo.USP_GET_VALIDADOS_FOR_EXPORT') and sysstat & 0xf = 4)
+  drop procedure dbo.USP_GET_VALIDADOS_FOR_EXPORT
+GO
+
+CREATE PROCEDURE dbo.USP_GET_VALIDADOS_FOR_EXPORT
+	@DtFrom varchar(23)
+AS
+BEGIN
+	SELECT a.Username, a.Nome, a.DtNasc, v.Valor
+	FROM Validados v
+	INNER JOIN Alunos a on v.IdAluno = a.IdAluno
+	INNER JOIN Movimentos m on v.IdMov = m.IdMov
+	WHERE m.DtValor >= convert(datetime, @DtFrom, 121)
+END
+GO
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------

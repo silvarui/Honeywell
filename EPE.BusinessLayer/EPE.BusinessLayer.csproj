@@ -50,7 +50,7 @@
     <Compile Include="CopyToRecordException.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityDbAdapter.cs" />
-    <Compile Include="FileImporters.cs" />
+    <Compile Include="FileActions.cs" />
     <Compile Include="InvalidPropertyException.cs" />
     <Compile Include="Movimento.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

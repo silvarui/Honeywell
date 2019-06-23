@@ -70,7 +70,7 @@ namespace EPE.BusinessLayer
     public class ValidadoAdapter : EntityDbAdapter<Validado>
     {
         private const string USP_STORE_VALIDADO = "USP_STORE_VALIDADO";
-
+        
         public ValidadoAdapter(string connectionString)
             : base(connectionString)
         { }
@@ -101,6 +101,119 @@ namespace EPE.BusinessLayer
                     base.CopyEntityColumnToRecord(columnName, entity, ref record);
                     break;
             }
+        }
+    }
+
+    public class ValidadoForExport : Entity, IExportEntity
+    {
+        public const string colAnoLectivo = "Ano lectivo";
+        public const string colMoeda = "Moeda";
+        public const string colModoPagamento = "Modo de pagamento";
+        public const string colUsername = "ID do Aluno";
+        public const string colValor = "Valor do pagamento";
+
+        public string Username { get; set; }
+        public string Nome { get; set; }
+        public DateTime DtNasc { get; set; }
+        public double Valor { get; set; }
+
+        public override object this[string columnName]
+        {
+            set => base[columnName] = value;
+            get
+            {
+                switch (columnName)
+                {
+                    case colUsername:
+                        return Username;
+                    case colAnoLectivo:
+                        return AnoLectivo;
+
+                    case colModoPagamento:
+                        return ModoPagamento;
+
+                    case colValor:
+                        return Valor;
+
+                    default:
+                        return base[columnName];
+                }
+            }
+        }
+
+        public string AnoLectivo
+        {
+            get
+            {
+                var currentYear = DateTime.Now.Year;
+
+                return string.Format("{0}/{1}", currentYear-1, currentYear);
+            }
+        }
+
+        public string Moeda => "3";
+
+        public string ModoPagamento => "1";
+
+        public override string[] GetColumnNames()
+        {
+            var columns = new List<string>
+            {
+                colAnoLectivo,
+                colUsername,
+                Aluno.colNome,
+                Aluno.colDtNasc,
+                colValor,
+                colMoeda,
+                colModoPagamento
+            };
+
+            return columns.ToArray();
+        }
+
+        public override string GetColumnType(string columnName)
+        {
+            switch (columnName)
+            {
+                case colAnoLectivo:
+                case colUsername:
+                case Aluno.colNome:
+                case Aluno.colDtNasc:
+                    return "VARCHAR";
+
+                case colValor:
+                    return "DECIMAL";
+
+                case colModoPagamento:
+                case colMoeda:
+                    return "INT";
+
+                default:
+                    return string.Empty;
+            }
+        }
+    }
+
+    public class ValidadoForExportAdapter : EntityDbAdapter<ValidadoForExport>
+    {
+        private const string USP_GET_VALIDADOS_FOR_EXPORT = "USP_GET_VALIDADOS_FOR_EXPORT";
+
+        public ValidadoForExportAdapter(string connectionString)
+            : base(connectionString)
+        { }
+
+        public List<ValidadoForExport> GetValidadosForExport(DateTime dateFrom)
+        {
+            var validados = new List<ValidadoForExport>();
+
+            var param = new Parameters
+            {
+                new DataElement("DtFrom", dateFrom)
+            };
+
+            LoadList(ref validados, USP_GET_VALIDADOS_FOR_EXPORT, param);
+
+            return validados;
         }
     }
 }

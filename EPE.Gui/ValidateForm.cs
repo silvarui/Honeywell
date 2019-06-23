@@ -24,7 +24,14 @@ namespace EPE.Gui
 
             validateModel = new ValidateModel();
 
+            validateModel.OnDataExported += ValidateModel_OnDataExported;
+
             InitializeComponent();
+        }
+
+        private void ValidateModel_OnDataExported(object sender, EventArgs e)
+        {
+            MessageBox.Show("Exportação concluída!!");
         }
 
         private void ValidateForm_Load(object sender, EventArgs e)
@@ -73,6 +80,37 @@ namespace EPE.Gui
             });
 
             LoadGridViews(true);
+        }
+
+        private void BtnSaveAndExport_Click(object sender, EventArgs e)
+        {
+            LongOperation.StartNonUIOperation(delegate
+            {
+                validateModel.SaveValidationAndExport();
+            });
+        }
+
+        private void BtnSelectExportFolder_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog1.ShowNewFolderButton = true;
+
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                txtDestFolder.Text = folderBrowserDialog1.SelectedPath;
+            }
+        }
+
+        private void BtnLimparExportFolder_Click(object sender, EventArgs e)
+        {
+            txtDestFolder.Text = string.Empty;
+        }
+
+        private void BtnExportPorValidar_Click(object sender, EventArgs e)
+        {
+            LongOperation.StartNonUIOperation(delegate
+            {
+                validateModel.ExportarPorValidar();
+            });
         }
     }
 }
