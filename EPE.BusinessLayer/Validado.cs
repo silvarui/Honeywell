@@ -67,7 +67,7 @@ namespace EPE.BusinessLayer
         {
             switch (columnName)
             {
-                case colDtValor:
+                case Movimento.colDtValor:
                     return "Data do movimento";
 
                 default:
