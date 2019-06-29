@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EPE.DataAccess;
 
 namespace EPE.BusinessLayer
@@ -107,15 +104,31 @@ namespace EPE.BusinessLayer
     public class ValidadoForExport : Entity, IExportEntity
     {
         public const string colAnoLectivo = "Ano lectivo";
-        public const string colMoeda = "Moeda";
+        public const string colMoeda = "Código da Moeda";
         public const string colModoPagamento = "Modo de pagamento";
-        public const string colUsername = "ID do Aluno";
+        public const string colUsername = "EPE do Aluno";
         public const string colValor = "Valor do pagamento";
+        public const string colNome = "Nome do Aluno";
 
         public string Username { get; set; }
+
         public string Nome { get; set; }
-        public DateTime DtNasc { get; set; }
+
         public double Valor { get; set; }
+
+        public string AnoLectivo
+        {
+            get
+            {
+                var currentYear = DateTime.Now.Year;
+
+                return string.Format("{0}/{1}", currentYear - 1, currentYear);
+            }
+        }
+
+        public string Moeda => "3";
+
+        public string ModoPagamento => "1";
 
         public override object this[string columnName]
         {
@@ -124,8 +137,12 @@ namespace EPE.BusinessLayer
             {
                 switch (columnName)
                 {
+                    case colMoeda:
+                        return Moeda;
+
                     case colUsername:
                         return Username;
+
                     case colAnoLectivo:
                         return AnoLectivo;
 
@@ -135,25 +152,14 @@ namespace EPE.BusinessLayer
                     case colValor:
                         return Valor;
 
+                    case colNome:
+                        return Nome;
+
                     default:
                         return base[columnName];
                 }
             }
-        }
-
-        public string AnoLectivo
-        {
-            get
-            {
-                var currentYear = DateTime.Now.Year;
-
-                return string.Format("{0}/{1}", currentYear-1, currentYear);
-            }
-        }
-
-        public string Moeda => "3";
-
-        public string ModoPagamento => "1";
+        }   
 
         public override string[] GetColumnNames()
         {
@@ -161,8 +167,7 @@ namespace EPE.BusinessLayer
             {
                 colAnoLectivo,
                 colUsername,
-                Aluno.colNome,
-                Aluno.colDtNasc,
+                colNome,
                 colValor,
                 colMoeda,
                 colModoPagamento
@@ -177,8 +182,7 @@ namespace EPE.BusinessLayer
             {
                 case colAnoLectivo:
                 case colUsername:
-                case Aluno.colNome:
-                case Aluno.colDtNasc:
+                case colNome:
                     return "VARCHAR";
 
                 case colValor:

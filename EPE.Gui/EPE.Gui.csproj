@@ -71,6 +71,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PresentationModels\AlunoNotFoundException.cs" />
     <Compile Include="PresentationModels\BasePresentationModel.cs" />
     <Compile Include="PresentationModels\ImportModel.cs" />
     <Compile Include="PresentationModels\ValidateModel.cs" />

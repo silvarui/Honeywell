@@ -1,15 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Collections;
-using EPE.BusinessLayer;
 using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
+using EPE.BusinessLayer;
 
 namespace EPE.Controls
 {
@@ -395,6 +393,8 @@ namespace EPE.Controls
 
         //this event will be fired a cell value is changed in the grid
         public event EventHandler<GridValueChangedEventArgs> GridValueChanged;
+
+        public event EventHandler<DataGridViewCellEventArgs> OnCellEditEnded;
         private void OnCellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -405,6 +405,8 @@ namespace EPE.Controls
                     crtValue = dataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
                 }
                 cellValueOnBeginEdit = null;
+
+                OnCellEditEnded?.Invoke(this, e);
             }
             catch (InvalidOperationException ex)
             {
@@ -425,6 +427,11 @@ namespace EPE.Controls
         private void OnRowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
             ShowCount();
+        }
+
+        public DataGridViewRow GetRow(int rowIndex)
+        {
+            return dataGrid.Rows[rowIndex];
         }
     }
 

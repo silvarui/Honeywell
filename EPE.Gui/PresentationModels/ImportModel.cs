@@ -1,7 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Configuration;
-using System.Runtime.CompilerServices;
 using EPE.BusinessLayer;
 
 namespace EPE.Gui.PresentationModels

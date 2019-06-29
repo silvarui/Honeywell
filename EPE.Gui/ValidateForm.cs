@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using EPE.BusinessLayer;
 using EPE.Gui.PresentationModels;
@@ -111,6 +106,33 @@ namespace EPE.Gui
             {
                 validateModel.ExportarPorValidar();
             });
+        }
+
+        private void EgvPorValidar_OnCellEditEnded(object sender, DataGridViewCellEventArgs e)
+        {
+            var editedRow = egvPorValidar.GetRow(e.RowIndex);
+
+            try
+            {
+                var usernameToSearch = editedRow.Cells[e.ColumnIndex].Value.ToString();
+
+                if (string.IsNullOrEmpty(usernameToSearch))
+                    return;
+
+                var movimentoToValidate = (Movimento)editedRow.Tag;
+
+                validateModel.ValidateMovimento(movimentoToValidate, usernameToSearch);
+
+                egvPorValidar.RemoveEntity(movimentoToValidate);
+
+                LoadGridViews(true);
+            }
+            catch (AlunoNotFoundException ex)
+            {
+                MessageBox.Show(ex.Message, "Validação EPE", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                editedRow.Cells[e.ColumnIndex].Value = string.Empty;
+            }
         }
     }
 }

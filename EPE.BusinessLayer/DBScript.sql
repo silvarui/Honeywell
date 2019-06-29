@@ -362,7 +362,7 @@ CREATE PROCEDURE dbo.USP_GET_VALIDADOS_FOR_EXPORT
 	@DtFrom varchar(23)
 AS
 BEGIN
-	SELECT a.Username, a.Nome, a.DtNasc, v.Valor
+	SELECT a.Username, a.Nome, v.Valor
 	FROM Validados v
 	INNER JOIN Alunos a on v.IdAluno = a.IdAluno
 	INNER JOIN Movimentos m on v.IdMov = m.IdMov

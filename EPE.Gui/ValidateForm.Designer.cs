@@ -32,6 +32,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.grpValidate = new System.Windows.Forms.GroupBox();
             this.dtDateFrom = new System.Windows.Forms.DateTimePicker();
+            this.bsValidate = new System.Windows.Forms.BindingSource(this.components);
             this.label5 = new System.Windows.Forms.Label();
             this.btnAnalyze = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -45,21 +46,20 @@
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabToValidate = new System.Windows.Forms.TabPage();
-            this.egvPorValidar = new EPE.Controls.EntityGridView();
             this.tabValidated = new System.Windows.Forms.TabPage();
-            this.egvValidados = new EPE.Controls.EntityGridView();
             this.tabAnalyzed = new System.Windows.Forms.TabPage();
-            this.bsValidate = new System.Windows.Forms.BindingSource(this.components);
+            this.egvPorValidar = new EPE.Controls.EntityGridView();
+            this.egvValidados = new EPE.Controls.EntityGridView();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.grpValidate.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bsValidate)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabToValidate.SuspendLayout();
             this.tabValidated.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bsValidate)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -102,6 +102,10 @@
             this.dtDateFrom.Name = "dtDateFrom";
             this.dtDateFrom.Size = new System.Drawing.Size(145, 20);
             this.dtDateFrom.TabIndex = 18;
+            // 
+            // bsValidate
+            // 
+            this.bsValidate.DataSource = typeof(EPE.Gui.PresentationModels.ValidateModel);
             // 
             // label5
             // 
@@ -246,15 +250,6 @@
             this.tabToValidate.Text = "Por validar";
             this.tabToValidate.UseVisualStyleBackColor = true;
             // 
-            // egvPorValidar
-            // 
-            this.egvPorValidar.ColumnInfos = null;
-            this.egvPorValidar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.egvPorValidar.Location = new System.Drawing.Point(3, 3);
-            this.egvPorValidar.Name = "egvPorValidar";
-            this.egvPorValidar.Size = new System.Drawing.Size(1038, 603);
-            this.egvPorValidar.TabIndex = 0;
-            // 
             // tabValidated
             // 
             this.tabValidated.Controls.Add(this.egvValidados);
@@ -266,15 +261,6 @@
             this.tabValidated.Text = "Validados";
             this.tabValidated.UseVisualStyleBackColor = true;
             // 
-            // egvValidados
-            // 
-            this.egvValidados.ColumnInfos = null;
-            this.egvValidados.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.egvValidados.Location = new System.Drawing.Point(3, 3);
-            this.egvValidados.Name = "egvValidados";
-            this.egvValidados.Size = new System.Drawing.Size(1038, 603);
-            this.egvValidados.TabIndex = 1;
-            // 
             // tabAnalyzed
             // 
             this.tabAnalyzed.Location = new System.Drawing.Point(4, 22);
@@ -285,9 +271,24 @@
             this.tabAnalyzed.Text = "Analisados";
             this.tabAnalyzed.UseVisualStyleBackColor = true;
             // 
-            // bsValidate
+            // egvPorValidar
             // 
-            this.bsValidate.DataSource = typeof(EPE.Gui.PresentationModels.ValidateModel);
+            this.egvPorValidar.ColumnInfos = null;
+            this.egvPorValidar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.egvPorValidar.Location = new System.Drawing.Point(3, 3);
+            this.egvPorValidar.Name = "egvPorValidar";
+            this.egvPorValidar.Size = new System.Drawing.Size(1038, 603);
+            this.egvPorValidar.TabIndex = 0;
+            this.egvPorValidar.OnCellEditEnded += new System.EventHandler<System.Windows.Forms.DataGridViewCellEventArgs>(this.EgvPorValidar_OnCellEditEnded);
+            // 
+            // egvValidados
+            // 
+            this.egvValidados.ColumnInfos = null;
+            this.egvValidados.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.egvValidados.Location = new System.Drawing.Point(3, 3);
+            this.egvValidados.Name = "egvValidados";
+            this.egvValidados.Size = new System.Drawing.Size(1038, 603);
+            this.egvValidados.TabIndex = 1;
             // 
             // ValidateForm
             // 
@@ -307,12 +308,12 @@
             this.splitContainer1.ResumeLayout(false);
             this.grpValidate.ResumeLayout(false);
             this.grpValidate.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bsValidate)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabMain.ResumeLayout(false);
             this.tabToValidate.ResumeLayout(false);
             this.tabValidated.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.bsValidate)).EndInit();
             this.ResumeLayout(false);
 
         }

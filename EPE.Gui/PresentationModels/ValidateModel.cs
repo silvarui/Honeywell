@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using EPE.BusinessLayer;
-using System;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using EPE.BusinessLayer;
 
 namespace EPE.Gui.PresentationModels
 {
@@ -91,7 +91,10 @@ namespace EPE.Gui.PresentationModels
         {
             foreach (var mov in NaoValidados)
             {
-                var aluno = alunos.FirstOrDefault(a => a.Boletins.Exists(b => b.NumBoletim == mov.BVR));
+                if (string.IsNullOrEmpty(mov.BVR))
+                    continue;
+
+                var aluno = alunos.FirstOrDefault(a => a.Boletins.Exists(b => Convert.ToInt32(b.NumBoletim) == Convert.ToInt32(mov.BVR)));
 
                 if (aluno == null)
                     continue;
@@ -163,6 +166,16 @@ namespace EPE.Gui.PresentationModels
             }
 
             OnDataExported?.Invoke(this, null);
+        }
+
+        public void ValidateMovimento(Movimento movimento, string username)
+        {
+            var aluno = alunos.FirstOrDefault(a => !string.IsNullOrEmpty(a.Username) && a.Username.Contains(username));
+
+            if (aluno == null)
+                throw new AlunoNotFoundException("Aluno não encontrado!");
+
+            ValidateMovimento(movimento, aluno);
         }
     }
 }
