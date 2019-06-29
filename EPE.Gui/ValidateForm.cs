@@ -56,11 +56,11 @@ namespace EPE.Gui
             validateModel.CheckValidados();
         }
 
-        private void LoadGridViews(bool afterSave = false)
+        private void LoadGridViews(bool loadPorValidar = true)
         {
             egvValidados.Initialize(typeof(Validado), validateModel.Validados);
 
-            if (afterSave)
+            if (!loadPorValidar)
                 return;
 
             egvPorValidar.SetEditableColumn(Movimento.colUsername);
@@ -74,7 +74,7 @@ namespace EPE.Gui
                 validateModel.SaveValidation();
             });
 
-            LoadGridViews(true);
+            LoadGridViews(false);
         }
 
         private void BtnSaveAndExport_Click(object sender, EventArgs e)
@@ -125,7 +125,7 @@ namespace EPE.Gui
 
                 egvPorValidar.RemoveEntity(movimentoToValidate);
 
-                LoadGridViews(true);
+                LoadGridViews(false);
             }
             catch (AlunoNotFoundException ex)
             {
@@ -133,6 +133,24 @@ namespace EPE.Gui
 
                 editedRow.Cells[e.ColumnIndex].Value = string.Empty;
             }
+        }
+
+        private void EgvPorValidar_OnCellDoubleClicked(object sender, DataGridViewCellEventArgs e)
+        {
+            var editedRow = egvPorValidar.GetRow(e.RowIndex);
+
+            var movimentoToValidate = (Movimento)editedRow.Tag;
+
+            var searchAluno = new SearchAluno(movimentoToValidate, validateModel.Alunos);
+
+            if (searchAluno.ShowDialog() != DialogResult.OK)
+                return;
+
+            validateModel.ValidateMovimento(movimentoToValidate, searchAluno.SelectedAlunos);
+
+            egvPorValidar.RemoveEntity(movimentoToValidate);
+
+            LoadGridViews(false);
         }
     }
 }

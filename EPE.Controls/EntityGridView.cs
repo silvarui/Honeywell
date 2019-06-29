@@ -433,6 +433,22 @@ namespace EPE.Controls
         {
             return dataGrid.Rows[rowIndex];
         }
+
+        public event EventHandler<DataGridViewCellEventArgs> OnCellDoubleClicked;
+        private void OnCellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                if (dataGrid.CurrentCell != null)
+                {
+                    OnCellDoubleClicked?.Invoke(this, new DataGridViewCellEventArgs(dataGrid.CurrentCell.ColumnIndex, dataGrid.CurrentCell.RowIndex));
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+        }
     }
 
     public class GridValueChangedEventArgs : EventArgs

@@ -46,10 +46,10 @@
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabToValidate = new System.Windows.Forms.TabPage();
-            this.tabValidated = new System.Windows.Forms.TabPage();
-            this.tabAnalyzed = new System.Windows.Forms.TabPage();
             this.egvPorValidar = new EPE.Controls.EntityGridView();
+            this.tabValidated = new System.Windows.Forms.TabPage();
             this.egvValidados = new EPE.Controls.EntityGridView();
+            this.tabAnalyzed = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -250,6 +250,17 @@
             this.tabToValidate.Text = "Por validar";
             this.tabToValidate.UseVisualStyleBackColor = true;
             // 
+            // egvPorValidar
+            // 
+            this.egvPorValidar.ColumnInfos = null;
+            this.egvPorValidar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.egvPorValidar.Location = new System.Drawing.Point(3, 3);
+            this.egvPorValidar.Name = "egvPorValidar";
+            this.egvPorValidar.Size = new System.Drawing.Size(1038, 603);
+            this.egvPorValidar.TabIndex = 0;
+            this.egvPorValidar.OnCellEditEnded += new System.EventHandler<System.Windows.Forms.DataGridViewCellEventArgs>(this.EgvPorValidar_OnCellEditEnded);
+            this.egvPorValidar.OnCellDoubleClicked += new System.EventHandler<System.Windows.Forms.DataGridViewCellEventArgs>(this.EgvPorValidar_OnCellDoubleClicked);
+            // 
             // tabValidated
             // 
             this.tabValidated.Controls.Add(this.egvValidados);
@@ -261,6 +272,15 @@
             this.tabValidated.Text = "Validados";
             this.tabValidated.UseVisualStyleBackColor = true;
             // 
+            // egvValidados
+            // 
+            this.egvValidados.ColumnInfos = null;
+            this.egvValidados.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.egvValidados.Location = new System.Drawing.Point(3, 3);
+            this.egvValidados.Name = "egvValidados";
+            this.egvValidados.Size = new System.Drawing.Size(1038, 603);
+            this.egvValidados.TabIndex = 1;
+            // 
             // tabAnalyzed
             // 
             this.tabAnalyzed.Location = new System.Drawing.Point(4, 22);
@@ -270,25 +290,6 @@
             this.tabAnalyzed.TabIndex = 2;
             this.tabAnalyzed.Text = "Analisados";
             this.tabAnalyzed.UseVisualStyleBackColor = true;
-            // 
-            // egvPorValidar
-            // 
-            this.egvPorValidar.ColumnInfos = null;
-            this.egvPorValidar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.egvPorValidar.Location = new System.Drawing.Point(3, 3);
-            this.egvPorValidar.Name = "egvPorValidar";
-            this.egvPorValidar.Size = new System.Drawing.Size(1038, 603);
-            this.egvPorValidar.TabIndex = 0;
-            this.egvPorValidar.OnCellEditEnded += new System.EventHandler<System.Windows.Forms.DataGridViewCellEventArgs>(this.EgvPorValidar_OnCellEditEnded);
-            // 
-            // egvValidados
-            // 
-            this.egvValidados.ColumnInfos = null;
-            this.egvValidados.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.egvValidados.Location = new System.Drawing.Point(3, 3);
-            this.egvValidados.Name = "egvValidados";
-            this.egvValidados.Size = new System.Drawing.Size(1038, 603);
-            this.egvValidados.TabIndex = 1;
             // 
             // ValidateForm
             // 
@@ -300,6 +301,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ValidateForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ValidateForm";
             this.Load += new System.EventHandler(this.ValidateForm_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);

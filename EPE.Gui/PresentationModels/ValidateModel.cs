@@ -15,7 +15,7 @@ namespace EPE.Gui.PresentationModels
             Validados,
             NaoValidados
         }
-        private readonly List<Aluno> alunos;
+        public readonly List<Aluno> Alunos;
         private List<Movimento> movimentosToValidate;
         public List<Validado> Validados { get; }
 
@@ -51,7 +51,7 @@ namespace EPE.Gui.PresentationModels
 
         public bool CanValidate
         {
-            get { return alunos.Count > 0 && movimentosToValidate.Count > 0; }
+            get { return Alunos.Count > 0 && movimentosToValidate.Count > 0; }
         }
 
         public bool CanSave
@@ -69,7 +69,7 @@ namespace EPE.Gui.PresentationModels
 
         public ValidateModel()
         {
-            alunos = new AlunoAdapter(connectionString).GetAlunos();
+            Alunos = new AlunoAdapter(connectionString).GetAlunos();
 
             movimentosToValidate = new List<Movimento>();
             Validados = new List<Validado>();
@@ -94,7 +94,7 @@ namespace EPE.Gui.PresentationModels
                 if (string.IsNullOrEmpty(mov.BVR))
                     continue;
 
-                var aluno = alunos.FirstOrDefault(a => a.Boletins.Exists(b => Convert.ToInt32(b.NumBoletim) == Convert.ToInt32(mov.BVR)));
+                var aluno = Alunos.FirstOrDefault(a => a.Boletins.Exists(b => Convert.ToInt32(b.NumBoletim) == Convert.ToInt32(mov.BVR)));
 
                 if (aluno == null)
                     continue;
@@ -103,14 +103,14 @@ namespace EPE.Gui.PresentationModels
             }
         }
 
-        private void ValidateMovimento(Movimento movimento, Aluno aluno)
+        private void ValidateMovimento(Movimento movimento, Aluno aluno, double? valor = null)
         {
             Validados.Add(new Validado
             {
                 Movimento = movimento,
                 Aluno = aluno,
                 DtValid = DateTime.Now.Date,
-                Valor = movimento.Valor
+                Valor = valor ?? movimento.Valor
             });
         }
 
@@ -170,12 +170,22 @@ namespace EPE.Gui.PresentationModels
 
         public void ValidateMovimento(Movimento movimento, string username)
         {
-            var aluno = alunos.FirstOrDefault(a => !string.IsNullOrEmpty(a.Username) && a.Username.Contains(username));
+            var aluno = Alunos.FirstOrDefault(a => !string.IsNullOrEmpty(a.Username) && a.Username.Contains(username));
 
             if (aluno == null)
                 throw new AlunoNotFoundException("Aluno não encontrado!");
 
             ValidateMovimento(movimento, aluno);
+        }
+
+        public void ValidateMovimento(Movimento movimento, List<Aluno> alunosToAssociate)
+        {
+            var valorToValidado = movimento.Valor / alunosToAssociate.Count;
+
+            foreach (var aluno in alunosToAssociate)
+            {
+                ValidateMovimento(movimento, aluno, valorToValidado);
+            }
         }
     }
 }
