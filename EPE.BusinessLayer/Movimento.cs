@@ -142,6 +142,18 @@ namespace EPE.BusinessLayer
 
             return columns.ToArray();
         }
+
+        public override string GetPLTitle(string columnName)
+        {
+            switch (columnName)
+            {
+                case colDtValor:
+                    return "Data do movimento";
+
+                default:
+                    return base.GetPLTitle(columnName);
+            }
+        }
     }
 
 	public class MovimentoAdapter : EntityDbAdapter<Movimento>

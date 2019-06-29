@@ -105,6 +105,11 @@ namespace EPE.BusinessLayer
                 return theField; //the object itself
         }
 
+        public virtual string GetPLTitle(string columnName)
+        {
+            return columnName;
+        }
+
         #region UEID implementation
         private Guid uEId = Guid.NewGuid();
         /// <summary>

@@ -62,6 +62,18 @@ namespace EPE.BusinessLayer
                     return base.GetPLValue(columnName);
             }
         }
+
+        public override string GetPLTitle(string columnName)
+        {
+            switch (columnName)
+            {
+                case colDtValor:
+                    return "Data do movimento";
+
+                default:
+                    return base.GetPLTitle(columnName);
+            }
+        }
     }
 
     public class ValidadoAdapter : EntityDbAdapter<Validado>

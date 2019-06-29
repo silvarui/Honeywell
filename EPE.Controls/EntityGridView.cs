@@ -250,7 +250,7 @@ namespace EPE.Controls
                 gridColumn = new DataGridViewTextBoxColumn();
 
                 gridColumn.Name = colInfo;
-                gridColumn.HeaderText = colInfo;
+                gridColumn.HeaderText = entity.GetPLTitle(colInfo);
 
                 gridColumn.ReadOnly = (editInfo == null);
 
