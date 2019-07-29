@@ -29,7 +29,7 @@ namespace EPE.BusinessLayer
         public string Professor { get; set; }
         public string EncEduc { get; set; }
         public string Morada { get; set; }
-        public double? CPostal { get; set; }
+        public string CPostal { get; set; }
         public string Localidade { get; set; }
         public string Cantao { get; set; }
         public string Telefone { get; set; }

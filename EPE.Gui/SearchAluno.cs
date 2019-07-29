@@ -45,6 +45,8 @@ namespace EPE.Gui
             PopulateAlunos(searchModel.Alunos);
 
             CenterToScreen();
+
+            txtNomeAluno.Focus();
         }
 
         private void ApplyAlunosFilter()
@@ -63,7 +65,7 @@ namespace EPE.Gui
                 alunosToShow = alunosToShow.Where(a => !string.IsNullOrEmpty(a.Username) && a.Username.ToUpper().Contains(epeNumber.ToUpper())).ToList();
 
             if (!string.IsNullOrEmpty(nomeAluno))
-                alunosToShow = alunosToShow.Where(a => a.Nome.ToUpper().Contains(nomeAluno.ToUpper())).ToList();
+                alunosToShow = alunosToShow.Where(a => !string.IsNullOrEmpty(a.Nome) && a.Nome.ToUpper().Contains(nomeAluno.ToUpper())).ToList();
 
             if (!string.IsNullOrEmpty(nomeEncEdu))
                 alunosToShow = alunosToShow.Where(a => !string.IsNullOrEmpty(a.EncEduc) && a.EncEduc.ToUpper().Contains(nomeEncEdu.ToUpper())).ToList();
@@ -72,7 +74,7 @@ namespace EPE.Gui
                 alunosToShow = alunosToShow.Where(a => !string.IsNullOrEmpty(a.Morada) && a.Morada.ToUpper().Contains(endereco.ToUpper())).ToList();
 
             if (!string.IsNullOrEmpty(codPostal))
-                alunosToShow = alunosToShow.Where(a => a.CPostal.HasValue && a.CPostal.ToString().Contains(codPostal.ToUpper())).ToList();
+                alunosToShow = alunosToShow.Where(a => !string.IsNullOrEmpty(a.CPostal) && a.CPostal.ToUpper().Contains(codPostal.ToUpper())).ToList();
 
             if (!string.IsNullOrEmpty(localidade))
                 alunosToShow = alunosToShow.Where(a => !string.IsNullOrEmpty(a.Localidade) && a.Localidade.ToUpper().Contains(localidade.ToUpper())).ToList();

@@ -229,7 +229,7 @@ namespace EPE.Controls
         {
             dataGrid.Columns.Clear();
                         
-            dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             
             //The real Entity's columns            
             DataGridViewColumn gridColumn;
@@ -342,7 +342,7 @@ namespace EPE.Controls
 
             if (!dataGrid.CurrentCell.ReadOnly && dataGrid.CurrentCell is DataGridViewCheckBoxCell == false)
             {
-                dataGrid.CurrentCell.Style.BackColor = Color.Yellow;
+                //dataGrid.CurrentCell.Style.BackColor = Color.Yellow;
                 dataGrid.CurrentCell.Style.SelectionBackColor = Color.Blue;
 
                 dataGrid.BeginEdit(true);

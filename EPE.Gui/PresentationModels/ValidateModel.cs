@@ -40,7 +40,7 @@ namespace EPE.Gui.PresentationModels
             set
             {
                 exportFolder = value;
-
+            
                 OnPropertyChanged(nameof(ExportFolder));
             }
         }
@@ -94,7 +94,7 @@ namespace EPE.Gui.PresentationModels
                 if (string.IsNullOrEmpty(mov.BVR))
                     continue;
 
-                var aluno = Alunos.FirstOrDefault(a => a.Boletins.Exists(b => Convert.ToInt32(b.NumBoletim) == Convert.ToInt32(mov.BVR)));
+                var aluno = Alunos.FirstOrDefault(a => a.Boletins.Exists(b => b.NumBoletim == mov.BVR));
 
                 if (aluno == null)
                     continue;

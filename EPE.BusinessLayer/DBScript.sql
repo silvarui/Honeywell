@@ -1,6 +1,6 @@
 ﻿SET QUOTED_IDENTIFIER OFF;
 GO
-USE [EPE_Validation_Test];
+USE [EPE_Validation];
 GO
 IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
 GO
@@ -50,7 +50,7 @@ CREATE TABLE [dbo].[Alunos] (
     [Professor] nvarchar(255)  NULL,
     [EncEduc] nvarchar(255)  NULL,
     [Morada] nvarchar(255)  NULL,
-    [CPostal] float  NULL,
+    [CPostal] nvarchar(255)  NULL,
     [Localidade] nvarchar(255)  NULL,
     [Cantao] nvarchar(255)  NULL,
     [Telefone] nvarchar(255)  NULL,
@@ -183,7 +183,7 @@ CREATE PROCEDURE dbo.USP_STORE_ALUNO
 	@Professor nvarchar(255),
 	@EncEduc nvarchar(255),
 	@Morada nvarchar(255),
-	@CPostal float,
+	@CPostal nvarchar(255),
 	@Localidade nvarchar(255),
 	@Cantao nvarchar(255),
 	@Telefone nvarchar(255),

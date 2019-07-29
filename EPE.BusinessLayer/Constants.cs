@@ -10,7 +10,7 @@
         public const string colNome = "Nome";
         public const string colDataNasc = "Data_Nasc";
         public const string colEscola = "Escola";
-        public const string colProfessor = "Professor";
+        //public const string colProfessor = "Professor";
         public const string colEncEdu = "Enc_Educ";
         public const string colMorada = "Morada";
         public const string colCPostal = "CPostal";

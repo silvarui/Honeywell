@@ -114,9 +114,12 @@ namespace EPE.Gui
 
             try
             {
+                if (editedRow.Cells[e.ColumnIndex].Value == null)
+                    return;
+
                 var usernameToSearch = editedRow.Cells[e.ColumnIndex].Value.ToString();
 
-                if (string.IsNullOrEmpty(usernameToSearch))
+                if (string.IsNullOrEmpty(usernameToSearch) || usernameToSearch.Length != 8)
                     return;
 
                 var movimentoToValidate = (Movimento)editedRow.Tag;
@@ -132,6 +135,8 @@ namespace EPE.Gui
                 MessageBox.Show(ex.Message, "Validação EPE", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 editedRow.Cells[e.ColumnIndex].Value = string.Empty;
+
+                OpenSearchAluno(editedRow);
             }
         }
 
@@ -139,7 +144,12 @@ namespace EPE.Gui
         {
             var editedRow = egvPorValidar.GetRow(e.RowIndex);
 
-            var movimentoToValidate = (Movimento)editedRow.Tag;
+            OpenSearchAluno(editedRow);
+        }
+
+        private void OpenSearchAluno(DataGridViewRow dataGridViewRow)
+        {
+            var movimentoToValidate = (Movimento)dataGridViewRow.Tag;
 
             var searchAluno = new SearchAluno(movimentoToValidate, validateModel.Alunos);
 

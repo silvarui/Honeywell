@@ -261,7 +261,7 @@ namespace EPE.BusinessLayer
             columns.Add(Constants.colNome);
             columns.Add(Constants.colDataNasc);
             columns.Add(Constants.colEscola);
-            columns.Add(Constants.colProfessor);
+            //columns.Add(Constants.colProfessor);
             columns.Add(Constants.colEncEdu);
             columns.Add(Constants.colMorada);
             columns.Add(Constants.colCPostal);
@@ -306,9 +306,9 @@ namespace EPE.BusinessLayer
                     aluno.Escola = cellValueAsString;
                     break;
 
-                case Constants.colProfessor:
-                    aluno.Professor = cellValueAsString;
-                    break;
+                //case Constants.colProfessor:
+                //    aluno.Professor = cellValueAsString;
+                //    break;
 
                 case Constants.colEncEdu:
                     aluno.EncEduc = cellValueAsString;
@@ -319,7 +319,7 @@ namespace EPE.BusinessLayer
                     break;
 
                 case Constants.colCPostal:
-                    aluno.CPostal = Convert.ToDouble(cellValueAsString);
+                    aluno.CPostal = cellValueAsString;
                     break;
 
                 case Constants.colLocalidade:
@@ -393,10 +393,19 @@ namespace EPE.BusinessLayer
 
                 if (existentAlunos.Count > 0)
                 {
-                    var existentAluno = existentAlunos.FirstOrDefault(a => a.Username == aluno.Username && a.Nome == aluno.Nome);
+                    var existentAluno = existentAlunos.FirstOrDefault(a => a.Username == aluno.Username);
 
                     if (existentAluno != null)
                         aluno.IdAluno = existentAluno.IdAluno;
+                    else
+                    {
+                        existentAluno = existentAlunos.FirstOrDefault(a => a.Nome == aluno.Nome);
+
+                        if (existentAluno != null)
+                        {
+                            aluno.IdAluno = existentAluno.IdAluno;
+                        }
+                    }
                 }
 
                 alunos.Add(aluno);

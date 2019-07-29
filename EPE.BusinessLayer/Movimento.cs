@@ -90,6 +90,9 @@ namespace EPE.BusinessLayer
                 if (!string.IsNullOrEmpty(Descricao3) && Descricao3.Contains(IMAGEPRINT))
                     return false;
 
+                if (!string.IsNullOrEmpty(BVR) && string.IsNullOrEmpty(Descricao2) && string.IsNullOrEmpty(Descricao3))
+                    return false;
+
                 return Valor > 0 && DtValor != new DateTime();
             }
         }
