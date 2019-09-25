@@ -78,6 +78,17 @@ namespace EPE.BusinessLayer
             get { return Credito.HasValue ? Credito.Value : SubTotal.GetValueOrDefault(0); }
         }
 
+        public bool CanBeShown
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(BVR) && string.IsNullOrEmpty(Descricao2) && string.IsNullOrEmpty(Descricao3))
+                    return false;
+
+                return true;
+            }
+        }
+
         public bool CanBeValidated
         {
             get
@@ -90,12 +101,11 @@ namespace EPE.BusinessLayer
                 if (!string.IsNullOrEmpty(Descricao3) && Descricao3.Contains(IMAGEPRINT))
                     return false;
 
-                if (!string.IsNullOrEmpty(BVR) && string.IsNullOrEmpty(Descricao2) && string.IsNullOrEmpty(Descricao3))
-                    return false;
-
                 return Valor > 0 && DtValor != new DateTime();
             }
         }
+
+        public bool Analisado { get; set; }
 
         public string Username { get; } = string.Empty;
 
@@ -164,8 +174,9 @@ namespace EPE.BusinessLayer
 		private const string USP_STORE_MOVIMENTO = "USP_STORE_MOVIMENTO";
 		private const string USP_GET_MOVIMENTOS_TO_VALIDATE = "USP_GET_MOVIMENTOS_TO_VALIDATE";
 		private const string USP_GET_MOVIMENTOS = "USP_GET_MOVIMENTOS";
-
-		public MovimentoAdapter(string connectionString) 
+        private const string USP_SET_MOVIMENTO_ANALISADO = "USP_SET_MOVIMENTO_ANALISADO";
+        
+        public MovimentoAdapter(string connectionString) 
 			: base(connectionString)
 		{
 		}
@@ -197,6 +208,17 @@ namespace EPE.BusinessLayer
 
 			return movimentos;
 		}
+
+        public void UpdateMovimentosAnalisados(List<Movimento> movimentos)
+        {
+            foreach (var movimento in movimentos)
+            {
+                Parameters parameters = new Parameters();
+                parameters.Add(new DataElement("IdMov", movimento.IdMov));
+
+                DtAccess.ExecuteNonQuery(ConnectionString, USP_SET_MOVIMENTO_ANALISADO, parameters);
+            }
+        }
 
         protected override void CopyEntityColumnToRecord(string columnName, Movimento entity, ref Record record)
         {

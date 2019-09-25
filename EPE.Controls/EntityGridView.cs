@@ -284,10 +284,6 @@ namespace EPE.Controls
                 entityGridViewEnabledCell.EnableCell(newRow, ColumnInfos);
             dataGrid.Rows.Add(newRow);
 
-            //int rowHeight = CalculateRowHeight();
-            //if (rowHeight > 0)
-            //    newRow.Height = rowHeight;
-
             //scroll to the last added row             
             dataGrid.CurrentCell = newRow.Cells[2];
         }
@@ -335,6 +331,9 @@ namespace EPE.Controls
 
         private void OnCellEnter(object sender, DataGridViewCellEventArgs e)
         {
+            if (dataGrid.CurrentCell == null)
+                return;
+
             string cellName = string.Format(e.ColumnIndex.ToString("0000") + e.RowIndex.ToString("0000"));
 
             cellSelectionBgColor[cellName] = dataGrid.CurrentCell.Style.SelectionBackColor;
@@ -443,6 +442,22 @@ namespace EPE.Controls
                 {
                     OnCellDoubleClicked?.Invoke(this, new DataGridViewCellEventArgs(dataGrid.CurrentCell.ColumnIndex, dataGrid.CurrentCell.RowIndex));
                 }
+            }
+            catch (InvalidOperationException ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+        }
+
+        public event EventHandler<DataGridViewCellEventArgs> OnCellMouseMiddleClicked;
+        private void dataGrid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            try
+            {
+                if (dataGrid.CurrentCell == null || e.Button != MouseButtons.Middle)
+                    return;
+
+                OnCellMouseMiddleClicked?.Invoke(this, new DataGridViewCellEventArgs(dataGrid.CurrentCell.ColumnIndex, dataGrid.CurrentCell.RowIndex));
             }
             catch (InvalidOperationException ex)
             {

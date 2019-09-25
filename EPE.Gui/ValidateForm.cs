@@ -42,6 +42,22 @@ namespace EPE.Gui
 
             egvPorValidar.Initialize(typeof(Movimento), new List<Movimento>());
             egvValidados.Initialize(typeof(Validado), new List<Validado>());
+            egvAnalisados.Initialize(typeof(Movimento), new List<Movimento>());
+            
+            egvPorValidar.OnCellMouseMiddleClicked += EgvPorValidar_OnCellMouseRightClicked;
+        }
+
+        private void EgvPorValidar_OnCellMouseRightClicked(object sender, DataGridViewCellEventArgs e)
+        {
+            var selectedRow = egvPorValidar.GetRow(e.RowIndex);
+
+            var movimentoAnalisado = (Movimento)selectedRow.Tag;
+
+            validateModel.AddAnalisado(movimentoAnalisado);
+
+            egvPorValidar.RemoveEntity(movimentoAnalisado);
+
+            LoadGridViews(false);
         }
 
         private void BtnAnalyze_Click(object sender, EventArgs e)
@@ -59,12 +75,13 @@ namespace EPE.Gui
         private void LoadGridViews(bool loadPorValidar = true)
         {
             egvValidados.Initialize(typeof(Validado), validateModel.Validados);
+            egvAnalisados.Initialize(typeof(Movimento), validateModel.Analisados);
 
             if (!loadPorValidar)
                 return;
 
             egvPorValidar.SetEditableColumn(Movimento.colUsername);
-            egvPorValidar.Initialize(typeof(Movimento), validateModel.NaoValidados);
+            egvPorValidar.Initialize(typeof(Movimento), validateModel.ToManualValidation);
         }
 
         private void BtnSave_Click(object sender, EventArgs e)

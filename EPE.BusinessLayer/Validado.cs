@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EPE.DataAccess;
 
 namespace EPE.BusinessLayer
@@ -222,6 +223,8 @@ namespace EPE.BusinessLayer
         {
             var validados = new List<ValidadoForExport>();
 
+            var validadosForExport = new List<ValidadoForExport>();
+
             var param = new Parameters
             {
                 new DataElement("DtFrom", dateFrom)
@@ -229,7 +232,11 @@ namespace EPE.BusinessLayer
 
             LoadList(ref validados, USP_GET_VALIDADOS_FOR_EXPORT, param);
 
-            return validados;
+            //Ordenar lista para colocar username = null no fim da lista
+
+            validadosForExport.AddRange(validados.Where(v => !string.IsNullOrEmpty(v.Username)).OrderBy(v => v.Username).Concat(validados.Where(v => string.IsNullOrEmpty(v.Username)).OrderBy(v => v.Nome)));
+
+            return validadosForExport;
         }
     }
 }

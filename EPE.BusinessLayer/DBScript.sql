@@ -89,7 +89,8 @@ CREATE TABLE [dbo].[Movimentos] (
     [SubTotal] float  NULL,
     [Debito] float  NULL,
     [Credito] float  NULL,
-    [Saldo] float  NULL
+    [Saldo] float  NULL,
+	[Analisado] [bit] NULL
 );
 GO
 
@@ -307,6 +308,7 @@ BEGIN
 		NumTrans, CursDevis, SubTotal, Debito, Credito, Saldo
 	FROM Movimentos
 	WHERE DtValor >= convert(datetime, @DtFrom, 121)
+	and isnull(Analisado, 0) = 0
 	and IdMov not in (SELECT IdMov FROM Validados)
 END
 GO
@@ -362,13 +364,28 @@ CREATE PROCEDURE dbo.USP_GET_VALIDADOS_FOR_EXPORT
 	@DtFrom varchar(23)
 AS
 BEGIN
-	SELECT a.Username, a.Nome, v.Valor
+	SELECT a.Username, a.Nome, sum(v.Valor) as Valor
 	FROM Validados v
 	INNER JOIN Alunos a on v.IdAluno = a.IdAluno
 	INNER JOIN Movimentos m on v.IdMov = m.IdMov
 	WHERE m.DtValor >= convert(datetime, @DtFrom, 121)
+	group by a.Username, a.Nome
 END
 GO
+
+if exists (select * from sysobjects where id = object_id('dbo.USP_SET_MOVIMENTO_ANALISADO') and sysstat & 0xf = 4)
+  drop procedure dbo.USP_SET_MOVIMENTO_ANALISADO
+GO
+
+CREATE PROCEDURE dbo.USP_SET_MOVIMENTO_ANALISADO
+	@IdMov int
+AS
+BEGIN
+	UPDATE Movimentos SET Analisado = 1
+	WHERE IdMov = @IdMov
+END
+GO
+
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------

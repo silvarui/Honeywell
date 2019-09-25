@@ -19,6 +19,11 @@ namespace EPE.Gui.PresentationModels
         private List<Movimento> movimentosToValidate;
         public List<Validado> Validados { get; }
 
+        public List<Movimento> Analisados
+        {
+            get { return movimentosToValidate.Where(m => m.Analisado).ToList(); }
+        }
+
         private DateTime dateFrom;
         public DateTime DateFrom
         {
@@ -59,13 +64,21 @@ namespace EPE.Gui.PresentationModels
             get { return Validados.Count > 0; }
         }
 
-        public List<Movimento> NaoValidados
+        private List<Movimento> NaoValidados
         {
             get
             {
-                return movimentosToValidate.Where(m => m.CanBeValidated && !Validados.Exists(v => v.Movimento.IdMov == m.IdMov)).ToList();
+                return movimentosToValidate.Where(m => m.CanBeValidated && !m.Analisado && !Validados.Exists(v => v.Movimento.IdMov == m.IdMov) ).ToList();
             }
-        }      
+        }
+
+        public List<Movimento> ToManualValidation
+        {
+            get
+            {
+                return NaoValidados.Where(m => m.CanBeShown).ToList();
+            }
+        }
 
         public ValidateModel()
         {
@@ -112,6 +125,8 @@ namespace EPE.Gui.PresentationModels
                 DtValid = DateTime.Now.Date,
                 Valor = valor ?? movimento.Valor
             });
+
+            OnPropertyChanged(nameof(CanSave));
         }
 
         public void SaveValidation()
@@ -119,6 +134,8 @@ namespace EPE.Gui.PresentationModels
             try
             {
                 new ValidadoAdapter(connectionString).StoreValidados(Validados);
+
+                new MovimentoAdapter(connectionString).UpdateMovimentosAnalisados(Analisados);
 
                 Validados.Clear();
             }
@@ -186,6 +203,11 @@ namespace EPE.Gui.PresentationModels
             {
                 ValidateMovimento(movimento, aluno, valorToValidado);
             }
+        }
+
+        public void AddAnalisado(Movimento movimento)
+        {
+            movimentosToValidate.SingleOrDefault(m => m.IdMov == movimento.IdMov).Analisado = true;
         }
     }
 }
