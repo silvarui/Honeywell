@@ -85,7 +85,7 @@ namespace EPE.BusinessLayer
                 StringBuilder sbColumns = new StringBuilder();
                 StringBuilder sbValues = new StringBuilder();
 
-                foreach (var str in entityToStore.GetColumnNames())
+                foreach (var str in entityToStore.GetColumnNamesForExport())
                 {
                     var valToStore = entityToStore.GetPLValue(str);
 
@@ -96,7 +96,7 @@ namespace EPE.BusinessLayer
                     sbValues.Append("'" + valToStore + "',");
                 }
 
-                return string.Format("INSERT INTO {0} ({1}) VALUES({2});", tableName, sbColumns.ToString().Remove(sbColumns.Length - 1, 1), sbValues.ToString().Remove(sbValues.Length - 1, 1));
+                return string.Format("INSERT INTO [{0}] ({1}) VALUES({2});", tableName, sbColumns.ToString().Remove(sbColumns.Length - 1, 1), sbValues.ToString().Remove(sbValues.Length - 1, 1));
             }
             catch (Exception ex)
             {
@@ -110,7 +110,7 @@ namespace EPE.BusinessLayer
         {   
             StringBuilder sb = new StringBuilder();
 
-            foreach (var str in entity.GetColumnNames())
+            foreach (var str in entity.GetColumnNamesForExport())
             {
                 var columnType = entity.GetColumnType(str);
 
@@ -120,7 +120,7 @@ namespace EPE.BusinessLayer
                 sb.Append(string.Format("[{0}] {1},", str, columnType));
             }
 
-            return string.Format("CREATE TABLE {0} ({1});", tableName, sb.ToString().Remove(sb.Length - 1, 1));
+            return string.Format("CREATE TABLE [{0}] ({1});", tableName, sb.ToString().Remove(sb.Length - 1, 1));
         }
 
         protected void ExportData(IList entitiesToStore)
@@ -452,6 +452,23 @@ namespace EPE.BusinessLayer
             var validadosToStore = new ValidadoForExportAdapter(ConnectionString).GetValidadosForExport(dateFrom);
 
             ExportData(validadosToStore);
+        }
+    }
+
+    public class NaoValidadoFileAdapter : ExcelExportFileAdapter<Movimento>
+    {
+        private const string TABLENAME = "Por Validar";
+
+        public NaoValidadoFileAdapter(string filePath, string connectionString)
+            :base(filePath, connectionString, TABLENAME)
+        {
+        }
+
+        public void ExportNaoValidados(DateTime dateFrom)
+        {
+            var naoValidadosToStore = new MovimentoAdapter(ConnectionString).GetMovimentosNaoValidados(dateFrom, true);
+
+            ExportData(naoValidadosToStore);
         }
     }
 

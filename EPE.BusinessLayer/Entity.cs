@@ -15,6 +15,11 @@ namespace EPE.BusinessLayer
 
         public abstract string[] GetColumnNames();
 
+        public virtual string[] GetColumnNamesForExport()
+        {
+            return GetColumnNames();
+        }
+
         public virtual string[] GetGridViewColumns()
         {
             return null;

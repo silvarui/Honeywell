@@ -61,7 +61,10 @@ namespace EPE.Gui.PresentationModels
 
         public bool CanSave
         {
-            get { return Validados.Count > 0; }
+            get
+            {
+                return Validados.Count > 0 || movimentosToValidate.Exists(m => m.Analisado);
+            }
         }
 
         private List<Movimento> NaoValidados
@@ -90,7 +93,7 @@ namespace EPE.Gui.PresentationModels
 
         private void LoadMovimentos()
         {
-            movimentosToValidate = new MovimentoAdapter(connectionString).GetMovimentosToValidate(DateFrom);
+            movimentosToValidate = new MovimentoAdapter(connectionString).GetMovimentosNaoValidados(DateFrom, false);
 
             OnPropertyChanged(nameof(CanValidate));
         }
@@ -179,7 +182,7 @@ namespace EPE.Gui.PresentationModels
             }
             else
             {
-                throw new NotImplementedException();
+                new NaoValidadoFileAdapter(fileToExport, connectionString).ExportNaoValidados(DateFrom);
             }
 
             OnDataExported?.Invoke(this, null);
@@ -208,6 +211,8 @@ namespace EPE.Gui.PresentationModels
         public void AddAnalisado(Movimento movimento)
         {
             movimentosToValidate.SingleOrDefault(m => m.IdMov == movimento.IdMov).Analisado = true;
+
+            OnPropertyChanged(nameof(CanSave));
         }
     }
 }
