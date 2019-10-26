@@ -296,19 +296,20 @@ BEGIN
 END
 GO
 
-if exists (select * from sysobjects where id = object_id('dbo.USP_GET_MOVIMENTOS_TO_VALIDATE') and sysstat & 0xf = 4)
-  drop procedure dbo.USP_GET_MOVIMENTOS_TO_VALIDATE
+if exists (select * from sysobjects where id = object_id('dbo.USP_GET_MOVIMENTOS_NOT_VALIDATED') and sysstat & 0xf = 4)
+	DROP PROCEDURE [dbo].[USP_GET_MOVIMENTOS_NOT_VALIDATED]
 GO
 
-CREATE PROCEDURE dbo.USP_GET_MOVIMENTOS_TO_VALIDATE
-	@DtFrom varchar(23)
+CREATE PROCEDURE [dbo].[USP_GET_MOVIMENTOS_NOT_VALIDATED]
+	@DtFrom varchar(23),
+	@ForExport bit
 AS
 BEGIN
 	SELECT IdMov, DtEval, RelBancaria, Portofolio, Produto, IBAN, Moeda, DtInicio, DtFim, Descricao, DtTransac, DtContab, DtValor, Descricao1, Descricao2, Descricao3,
 		NumTrans, CursDevis, SubTotal, Debito, Credito, Saldo
 	FROM Movimentos
 	WHERE DtValor >= convert(datetime, @DtFrom, 121)
-	and isnull(Analisado, 0) = 0
+	and ((@ForExport = 0 AND isnull(Analisado, 0) = 0) OR @ForExport = 1)
 	and IdMov not in (SELECT IdMov FROM Validados)
 END
 GO
