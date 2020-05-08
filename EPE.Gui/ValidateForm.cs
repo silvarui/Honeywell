@@ -58,6 +58,8 @@ namespace EPE.Gui
             egvPorValidar.RemoveEntity(movimentoAnalisado);
 
             LoadGridViews(false);
+
+            validateModel.CheckValidados();
         }
 
         private void BtnAnalyze_Click(object sender, EventArgs e)
@@ -146,6 +148,8 @@ namespace EPE.Gui
                 egvPorValidar.RemoveEntity(movimentoToValidate);
 
                 LoadGridViews(false);
+
+                validateModel.CheckValidados();
             }
             catch (AlunoNotFoundException ex)
             {
@@ -178,6 +182,8 @@ namespace EPE.Gui
             egvPorValidar.RemoveEntity(movimentoToValidate);
 
             LoadGridViews(false);
+
+            validateModel.CheckValidados();
         }
     }
 }
